@@ -1,0 +1,350 @@
+데이터베이스(database)
+
+file : 어디에서나 사용가능, 성능, 보안, 편의성에 한계를 가짐(정렬)
+spreadsheet : 구조적으로 데이터를 정돈해 저장, 데이터 가공이 쉬워짐
+database : 소중한 데이터를 안전하고 편리하고 빠르게 보관하고 사용할 수 있음
+
+basic : input(create, update, delete), output(read)
+
+Relational DBMS : 관계형 데이터베이스 (Oracle, MySQL, Mssql, PostgreSQL, DB2)
+MongoDB : Document store
+
+
+오라클(Oracle)
+
+RDBMS : 정보를 열과 행을 사용한 표로 표현
+
+가격 정책(oracle price)
+edition           license
+express           named user plus (사용하는 컴퓨터 수에 따라 가격 올라감)          
+personal          processor (컴퓨터 CPU 성능에 따라 가격 올라감)
+standard
+enterprise
+
+
+단계
+1.setup
+2.CRUD
+3.group
+4.run
+
+
+설치(setup)
+oracle express edition 18c download 검색
+cmd
+sqlplus
+접속: sys as sysdba (관리자 접속)
+
+
+사용자와 스키마
+user schema : table grouping directory, 연관된 표들의 그룹핑, 사용자 생성시 그에 해당하는 user schema 함께 생성됨
+user : schema 관리
+
+사용자 생성
+oracle sql reference create user 검색
+cmd
+sqlplus
+create user egoing identified by 111111;
+ORA-01045: user EGOING lacks CREATE SESSION privilege: login denied // 권한 부족
+
+사용자 권한 부여
+grant dba to egoing; //모든 권한 부여 (실제로는 낮은 권한 부여 권장)
+
+
+테이블 생성(create)
+oracle sql reference create table 검색
+
+create table topic (
+	id number not null,
+	title varchar2(50) not null,
+	description varchar2(4000),
+	created date not null	
+);
+
+현재 user의 테이블 리스트 : select * from tab;
+
+
+행 추가
+insert into topic(id,title,description,created) values(1,'oracle','oracle is ...', sysdate);
+commit; //transation, 행 추가 or 수정작업 시 commit
+
+
+sql(structured query language) : 관계형 데이터베이스에서 사용됨, 구조화된 정보를 다루는 언어, 명령어를 통해서 데이터베이스를 제어, 자동화 가능
+
+
+행 읽기(read)
+select * from topic;
+select id,title,created from topic where id > 1;
+select * from topic order by id desc; // asc
+select * from topic offset 1 rows; // offset: 어디 부분부터 가져올 것인가를 정함, 행은 0부터 시작 (오라클 12버전부터 지원)
+select * from topic offset 0 fetch next 1 rows only; // fetch: 행을 얼마나 가저올 것인가를 정함 
+
+
+행 수정(update)
+update topic set title='mssql', description='mssql is ...' where id=3;
+commit;
+
+
+행 삭제(delete)
+delete from topic where id=3;
+commit;
+
+
+테이블 삭제
+drop table topic;
+
+
+기본 키(primary key)
+식별자 : 중복되면 안된다
+create table topic (
+	id number not null,
+	title varchar2(50) not null,
+	description varchar2(4000),
+	created date not null,
+	constraint PK_TOPIC primary key(id),	
+);
+
+ORA-00001: unique constraint (EGOING.PK_TOPIC) violated //pimary key 값 중복
+
+select * from topic where id=2; //pimary key 지정된 것으로 검색 시 속도 빨라짐(index로 이용됨)
+
+pk, fk 조회
+SELECT A.TABLE_NAME
+     , A.CONSTRAINT_NAME
+     , B.COLUMN_NAME     
+     , B.POSITION
+  FROM USER_CONSTRAINTS  A
+     , USER_CONS_COLUMNS B
+ WHERE A.OWNER           = B.OWNER
+   AND A.CONSTRAINT_NAME = B.CONSTRAINT_NAME
+ ORDER BY B.POSITION;
+
+select * from user_cons_columns order by position;
+
+
+시퀀스(sequence)
+create sequence SEQ_TOPIC;
+
+insert into topic(id,title,description,created) values(SEQ_TOPIC.nextval,'oracle','oracle is ...', sysdate);
+
+유저 시퀀스 조회 : select * from user_sequences;
+현재 시퀀스 값 조회 : select SEQ_TOPIC.currval from dual; // 가상테이블 dual
+
+
+서버와 클라이언트
+Host : 인터넷이 연결되어 있는 컴퓨터.
+데이터베이스의 host 이름 : 데이터베이스가 설치된 컴퓨터의 ip나 도메인
+
+host를 역할에 따라 나눔
+클라이언트 : 정보를 요청
+서버 : 정보를 응답, 서비스 제공
+
+oracle server <-> sqlplus(sql developer) client
+
+
+조인(join)
+표를 분해하고 조립하기
+
+표 분해 : 한 테이블에 모든 정보를 다 넣은 경우 데이터를 읽기는 좋지만 쓸(수정)때 중복된 것이 많아 불편 -> 표를 분해해서 새로운 표에 중복되는 데이터를 넣어줌
+표 조립 : 여러 표에 나뉘어져 있는 데이터를 읽기 좋게 필요한 부분만 뽑아서 만들어줌
+
+select * from topic left join author on topic.author_id = author.id;
+select T.id topic_id, title, name, profile from topic T left join author A on T.author_id = A.id where T.id=1; //alias 사용, 겹치는 column 앞에만 붙여주면 됨
+
+
+데이터 모델링
+
+순서: 업무파악 -> 개념적 데이터 모델링 -> 논리적 데이터 모델링 -> 물리적 데이터 모델링
+업무파악 : 의뢰인이 어던 것을 원하는지 파악하는 과정
+개념적 데이터 모델링 : 하고자 하는 일에 어떠한 개념이 있고 각각의 개념들은 어떻게 상호작용하고 있는가 파악하고 ER다이어그램 작성하는 과정
+논리적 데이터 모델링 : 생각 했던 개념을 관계형 데이터베이스에 맞게 표로 전환하는 과정
+물리적 데이터 모델링 : 어떤 데이터베이스 제품을 사용할것인가를 선택하고 그 데이터베이스 제품에 최적화된 코드를 작성해서 실제 표를 만드는 과정
+
+
+업무파악 
+의뢰인과 UI를 함께 그려봄, 카카오 oven, draw.io을 통해 간단한 UI 작성 가능
+
+
+개념적 데이터 모델링
+ERDiagram(Entity Relationship Diagram) : 현실로부터 개념을 인식하는 도구,정보,그룹,관계(정보 발견, 연관된 정보 그룹핑, 정보 그룹 사이의 관계 인식)를 알아 보기 쉽게 표현, 매우 쉽게 표로 전환 할 수 있음
+
+관계형 데이터베이스 다운 개념의 구조
+RDB는 내포관계를 허용하지 않음, 거대 단일 테이블로 표현 시 중복이 발생함 -> 연관된 데이터를 기준으로 표를 최대한 작게 만듬(읽는 것 보다 쓰는게 편하게 만듬)
+ex. 글((댓글(저자)), 저자) -> 댓글, 글, 저자
+
+ERD의 구성요소
+개념 entity -> table           (네모)
+속성 attribute -> column       (동그라미)
+관계 relation -> pk,fk(join)   (마름모)
+행   tuple -> row
+
+순서 : 엔티티 정의 -> 속성 정의 -> 식별자 정의 -> 엔터티간의 연결 -> 카디널리티 정의 -> 옵셔널리티 정의 -> ERD 완성
+
+엔티티 정의(entity)
+UI <-> database : 원인과 결과의 관계
+엔티티 추출하기 : form에서 추출하기 쉬움
+
+속성 정의(attribute)
+엔티티에 속해 있는 속성들 정의
+
+식별자 정의(identifier)
+엔티티에 속해 있는 속성중 식별자를 찾음
+후보키(candidate key) : 식별자가 될 수 있는 속성들 
+후보키 중 하나가 기본키(primary key)가 되고 나머지는 대체키(alternate key)가 됨
+중복키(composite key) : 속성 하나로 행을 표현할 수 없어서 여러 속성을 함께 사용
+
+엔터티간의 연결(relation ship)
+기본키와 외래키(foreign key)가 연결되는 것을 통해서 실제로 구현됨
+
+기수(cardinality)
+1:1 관계 : 담임 <-> 반
+1:N 관계 : 저자 <-> 댓글 (삼발이)
+N:M 관계 : 저자 <-> 글 (데이터베이스에서 표현할 수 없기 때문에 중간에 연결 테이블을 만들어서 최종적으로는 1:N 관계로 전환시킴)
+
+선택성(optionality)
+저자 <-> 댓글 : 저자는 댓글을 작성하지 않을수도 있다(optional) (동그라미), 각 댓글은 반드시 저자가 있다(필수) (작대기 하나)
+
+
+논리적 데이터 모델링
+개념적 데이터 모델링에서 뽑아낸 개념을 관계형 데이터베이스에 맞게 잘 정리정돈하는 것 
+mapping rule 
+개념 entity -> table           (네모)
+속성 attribute -> column       (동그라미)
+관계 relation -> pk,fk(join)   (마름모)
+
+테이블과 컬럼 생성
+ER Master : eclipse plugin, 캔버스에서 테이블 생성 후, 속성, 제약조건을 설정해줌 
+
+1:1 관계의 처리
+저자 <-> 휴면저자 fk : 의존적인 테이블에 fk가 있고 한 속성이 pk, fk 둘 다 될 수 있음.
+
+1:N 관계의 처리
+글 <-> 댓글 fk
+저자 <-> 댓글 fk
+
+N:M 관계의 처리
+저자 <-> 글 : 하나의 속성에 속하는 값이 여러개라 어느 한쪽에 fk를 주기 애매함
+테이블 중간에 연결 테이블(mapping table)을 생성
+저자 <-> fk 작성 fk <-> 글 : 작성 테이블에 중복키로 각 테이블에서 받은 fk를 사용함
+
+논리적 데이터 모델링 - 정규화
+정규화(normalization) : 정제되지 않은 데이터를 관계형 데이터베이스 맞게 만들어 주는 방법 (학술적:UNF,1NF~6NF, 상업적:주로 3NF 사용)
+
+제 1정규화(unnormalized form -> 1NF)
+원칙: 각 행의 각 칼럼의 값들이 원자적(atomic columns)이어야 한다. -> 각 각의 컬럼의 값들이 값을 하나만 가져야 한다.
+글 <-> 태그 : N:M 관계이므로 테이블을 쪼개고 중간에 매핑 테이블도 생성해준다.
+
+제 2정규화(1NF -> 2NF)
+원칙: 테이블상에 부분 종속성이 없어야 한다.(no partial dependencies) -> 표의 기본키 중에 중복키인 것이 없어야 한다.
+글 <-> 글타입 : 기본키가 (제목,타입)과 같이 중복키이었던것을 중복되는 데이터와 그렇지 않은 데이터(가격)로 나눠서 글타입 테이블을 생성
+
+제 3정규화(2NF -> 3NF)
+원칙: 테이블상에 이행적 종속성이 없어야 한다.(no transitive dependencies) -> 컬럼은 하나의 기본키에만 종속해야 한다.
+글 <-> 저자 : N:M 관계이므로 테이블을 쪼개고 중간에 매핑 테이블도 생성해준다.
+ 
+
+물리적 데이터 모델링
+성능 향상
+find slow query : 속도가 느려지는 쿼리를 찾음
+index : 읽을 때 빠르게 함, 쓸 때 입력된 데이터를 index로 정리정돈 하는데 복잡한 연산과정이 필요 
+cache : 입력에 따른 실행결과를 저장해 두었다가 나중에 동일한 입력이 들어왔을 때 저장해둔 결과를 사용, 데이터베이스 부하를 줄여줌
+denormalization : 역정규화(시도 전에 다른 방법을 먼저 해봄)
+
+역정규화(denormalization)
+정규화해 놓으면 표들이 여러개로 쪼개져서 쓰기엔 편하지만, 읽을 때 join이라는 연산으로 성능이 낮아짐
+자세한 내용은 다음에...
+
+
+SQL JOIN EXERCISE
+테이블 쪼개기
+inner join : inner join, 왼쪽과 오른쪽 테이블 양쪽 모두에 데이터가 있는 것만을 모아서 테이블을 만드는 방법, null 행이 없음, 교집합
+ex.
+테이블 2개 : select * from topic inner join author on topic.author_id=author.aid;
+테이블 3개 : select * from topic inner join author on topic.author_id=author.aid inner join profile on profile.pid=author.profile_id;
+
+left outer join : left join, 왼쪽에 있는 테이블을 기준으로 오른쪽 테이블의 정보를 얻어와 붙임 (왼쪽테이블의 겹치는 값(fk)이 null 이면 오른쪽 테이블의 데이터도 null), null 행 있음, 기준테이블만
+ex. 
+테이블 2개 : select * from topic left join author on topic.author_id=author.aid;
+테이블 3개 : select * from topic left join author on topic.author_id=author.aid left join profile on author.profile_id=profile.pid;
+테이블 3개(alias, where) : 
+select tid, T.title, author_id, name, P.title job_title 
+from topic T left join author A on T.author_id=A.aid left join profile P on A.profile_id=P.pid 
+where aid = 1;
+
+right outer join : left outer join의 반대 left join 사용
+
+full outer join : full outer join, 왼쪽과 오른쪽에 있는 행 모두를 합성해서 하나의 테이블을 만드는 방법, null 행 있음, 합집합, left outer join + right outer join 결과에서 중복된 행들을 제거한 것, 지원하지 않는 데이터베이스도 있음 (거의 사용하지 않음)
+ex. 
+지원함   : select * from topic full outer join author on topic.author_id=author.aid;
+지원안함 : (select * from topic left join author on topic.author_id=author.aid) union (select * from topic right join author on topic.author_id=author.aid);
+
+exclusive join : left join, 왼쪽에 있는 테이블에만 있는 행을 가져오고 싶을 때 사용 (거의 사용하지 않음)
+ex. 
+select * from topic left join author on topic.author_id=author.aid where author.aid is null;
+
+
+데이터 조작어(DML: Data Manipulation Language) : select, insert, update, delete
+데이터 정의어(DDL: Data Definition Language) : create, alter, drop, rename
+데이터 제어어(DCL: Data Control Language) : grant, revoke
+트랜잭션 제어어(TCL : Transaction Control Language) : commit, rollback
+
+집계함수 : 여러행 또는 테이블 전체 행으로부터 하나의 결과값만을 반환하는 함수, 보통 group by절을 이용하여 그루핑할때 같이 쓰임
+count, max, min, avg, sum
+count : 검색되는 행의 개수
+max, min : 선택된 컬럼값 중에서 최대값과 최소값, 모든 자료형에서 사용가능
+sum : 선택된 컬럼의 합
+avg : 선택된 컬럼의 평균
+
+decode 함수 : if else와 비슷한 기능을 수행 
+ex. decode(컬럼,조건1,결과1,조건2,결과2,조건3,결과3,...결과4): if(컬럼==조건1)? 결과1, else if(컬럼==조건2)? 결과2, else if(컬럼==조건3)? 결과3, else 결과4
+select decode(avg("rate"), null, 0, avg("rate"))  
+from "stars" 
+where "movie_no" = 20180529
+
+group by : 데이터들을 원하는 그룹으로 나누는 역할, 그룹의 컬럼명을 select절과 group by절 둘다에 명시해 주어야 함(집계함수는 group by 절에 명시해줄 필요 없음)
+ex. select depart_no , sum(salary) from emp group by depart_no order by depart_no;
+
+having : group by 사용시 조건 값, 집계함수를 가지고 조건비교를 할 때 사용, where절에서는 집계함수를 사용할 수 없음, where 절은 쿼리 전체에 대한 필터 역할을 하고, having 절은 where 조건을 처리한 결과에 대해 group by를 수행 후 산출된 결과에 대해 다시 조건을 걸어 데이터를 걸러내는 작업
+ex. 
+select depart_no, sum(salary), sum(commission) from emp group by depart_no having sum(commission) >= 2000 order by sum(commission);
+select depart_no, sum(salary), sum(commission) from emp group where job != 'sales' by depart_no having sum(commission) >= 2000 order by sum(commission) desc;
+
+like 연산자 : 문자열에서 %, _ 사용하여 검색
+ex. select * from employees where first_name like '%재_';
+
+인덱스(index) 생성 
+ex. create index 인덱스_이름 on 테이블_이름(컬럼1, 컬럼2, ...);
+
+유니크 인덱스(unique index) 생성 : UNIQUE 인덱스에 사용되는 해당 컬럼은 중복 값을 허용하지 않는다.
+ex. create index unique 인덱스_이름 on 테이블_이름(컬럼_이름);
+create unique index PK_TOPIC on topic(id asc);
+
+테이블 삭제(제약조건 무시)
+drop table topic cascade constraints;
+
+테이블 수정 제약조건 추가
+alter table topic add constraint PK_TOPIC primary key(id);
+alter table write add constraint FK_TOPIC_TO_write foreign key(topic_id) references topic(id);
+
+시퀀스 생성
+create sequence topic_seq increment by 1 start with 1 minvalue 1 maxvalue 9999999999999999999 nocycle nocache;
+
+timestamp 자료형
+오라클 테이블 timestamp 자료형의 컬럼에 systimestamp으로 오늘 날짜, 시간 삽입가능 
+
+rownum : 행에 조회된 순서대로 순번을 매긴다.
+select "commentNo", "userNo", "movieNo", "content", "likeCnt", "regdate"
+	from
+	(select "commentNo", "userNo", "movieNo", "content", "likeCnt", "regdate", rownum r
+		from
+		(select "comment_no" "commentNo", "user_no" "userNo", "movie_no" "movieNo", "content", "like_cnt" "likeCnt", "regdate"	
+			from "comments"
+			where "movie_no" = #{movieNo}
+			order by "like_cnt" desc))
+where r between #{start} and #{end}
+
+
+
+
+
+

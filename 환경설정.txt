@@ -1,0 +1,136 @@
+개발 환경 설정
+
+*자바 가상 기계 (JVM)
+
+자바 가상 기계(JVM: java Virtual Machine) : 완전한 기계어가 아닌 중간 단계의 바이트 코드(자바 프로그램)를 해석, 실행하는 가상의 운영체제 (운영체제는 자바 프로그램을 바로 실행 할 수 없음) 
+
+자바 프로그램 실행순서 : (소스파일.java) - (컴파일러 javac.exe) -> (바이트코드파일.class) - (JVM구동 java.exe) -> (각 운영체제 기계어로 번역 후 실행)
+
+특징 : 한 번 작성하면 어디서나(어느 운영체제에서나) 사용 가능, JVM에 의해 기계어로 번역되고 실행되기 때문에 C, C++ 프로그램보다 실행 속도가 느림
+
+
+*자바 개발 도구(JDK) 설치 (오라클에서 설치)
+
+자바 프로그램을 개발하기 위해서는 먼저 java SE(Standard Edition)의 구현체인 JDK를 설치해야 함
+
+구성
+자바 개발 키드(JDK:Java Development Kit) : JRE (자바 가상 기계(JVM), 라이브러리 API), 컴파일러 <-- 개발용
+자바 실행 환경(JRE:Java Runtime Environmet) : 자바 가상 기계(JVM), 라이브러리 API <-- 실행용
+
+jdk 환경 변수 설정: C:\Program Files\Java\jdk1.8.0_121\bin; %JAVA_HOME%\bin; <-- javac.exe, java.exe 를 다른 디렉토리에서도 사용할 수 있게 해줌
+
+
+*이클립스 설치 (eclipse 에서 설치)
+
+이클립스 : 프로그램 편집 툴, 자바 프로그램을 개발 하기 위한 통합 개발 환경(IDE: Integrated Development Environments)을 제공, 프로젝트 생성,자동 코드 완성 기능,디버깅 기능... 을 갖춤
+
+이클립스를 실행하려면 JVM이 필요 (JDK 먼저 설치)
+
+Eclipse IDE for Java Developers : 순수 자바 학습
+Eclipse IDE for Java EE Developers : 웹 애플리케이션 등의 엔터프라이즈(네트워크) 환경에서 실행되는 자바 애플리케이션을 개발하기 위해 필요 (현업에서 사용)
+
+
+*이클립스 환경설정
+
+Window -> Preferences
+
+General -> Appearance -> Colors and Fonts에서 Text Font - Edit으로 D2Coding, 크기 설정
+General -> Workspace에서 Other -> UTF-8 설정
+General -> Content Types -> Default encoding UTF-8 업데이트
+java -> installed JREs -> add jdk
+Web -> CSS Files, HTML Files, JSP Files 에서 Encoding UTF-8로 선택
+Web -> JSP Files -> Editor -> Templates -> New JSP File (html) 기본 템플릿이 HTML4, <! DOCTYPE html> 뒷부분을 모두 지워 줌 HTML5
+
+Window -> Web Browser에서 Chrome 선택
+
+
+*톰캣 설치 (아파치에서 설치)
+
+JSP를 위한 서버 프로그램
+JAVA_HOME 환경 변수 설정
+
+
+이클립스 단축키
+
+자동정렬 : Ctrl + Shift + F
+들여 쓰기 자동 수정 : Ctrl + I
+한줄 주석 : Ctrl + /
+여러줄 주석 영역선택 : Ctrl + Shift + /
+여러줄 주석 해제 : Ctrl + Shift + \
+한 줄 복사 : Ctrl + Alt + 아래방향키
+줄 이동 : Alt + 방향키
+한 줄 삭제 : Ctrl + D
+같은 이름의 변수 한번에 바꾸기 : Alt + Shift + R
+변수, 메소드 클릭시 선언, 구현 위치 : Ctrl + 클릭
+특정 줄 번호로 이동 : Ctrl + L
+이전, 이후 작업 화면 : Alt + Left(Right)
+파일 닫기 : Ctrl + W
+모든 파일 닫기 : Ctrl + SHIFT + W
+전체화면 : Ctrl + M
+자동 import : Ctrl + Shift + O
+템플릿 사용 : sysout, main, try, for + Ctrl + Space 자동완성 
+다음 줄부터 줄 바꿈 : Shift + Enter
+줌 인, 줌 아웃 : Ctrl + = , Ctrl + -
+Override/Implement Methods : Ctrl + Shift + S,V
+Getter/Setter Methods : Ctrl + Shift + S,R -> Alt + A -> Alt + S -> Enter
+파일에서 검색 : Ctrl + H (*.java,*jsp)
+
+스프링 정리
+
+lib파일
+
+*spring
+
+spring-aop
+spring-beans
+spring-context
+spring-core
+spring-expression
+spring-jcl
+
+
+*mybatis
+
+mybatis
+mybatis-spring
+spring-jdbc
+spring-tx
+ojdbc6
+
+
+*controller
+
+spring-web
+spring-webmvc
+
+
+*taglib
+
+taglibs-standard-impl
+taglibs-standard-spec
+
+*js
+jquery.js
+moment-with-locales.js
+underscore-min.js
+
+
+1. web.xml
+
+post 한글처리 필터 -> applicationContext.xml 읽음(listener) -> watcha-servlet.xml 읽음(servlet), mapping (/) -> error-page (404)
+
+2. watcha-servlet.xml
+
+annotation-driven -> /WEB-INF/view/ .jsp (view-resolvers prefix, suffix) -> controller 설정(bean wiring) -> img,css,fonts,js...자원 접근 (resources location, mapping) -> upload (multipartResolver maxUploadSize)
+
+3. mybatis-config.xml
+
+vo typeAliases -> mapper resource (~/.xml)
+
+4. applicationContext.xml
+
+context.xml 커넥션풀 설정 -> sqlSessionFactory 설정 -> sqlSession 설정 -> DAO, Service -> aop (전부 bean wiring)
+
+5. 작성 순서
+
+veiw (.jsp) -> vo -> dao -> mapper -> service -> controller
