@@ -1,0 +1,502 @@
+웹브라우저와 JavaScript
+
+HTML : 정보,  CSS : 디자인,  JavaScript : 웹브라우저, html 제어
+
+HTML에서 JavaScript 로드하기
+1. inline
+   태그에 직접 자바스크립트를 기술하는 방식
+   <input type="button" onclick="alert('Hello world')" value="Hello world" />
+
+2. script 
+   <script></script> 태그를 만들어서 여기에 자바스크립트 코드를 삽입하는 방식
+
+3. 외부 파일로 분리
+   js를 별도의 파일로 분리, 하나의 js 파일을 여러 웹페이지에서 로드함으로서 js의 재활용성을 높임, 캐쉬를 통해서 속도의 향상, 전송량의 경량화를 도모
+
+4. Scirpt 파일의 위치
+   script 파일은 head 태그 보다 페이지의 하단에 위치시키는 것이 더 좋은 방법
+   window.onload = function(){} 함수는 웹브라우저의 모든 구성요소에 대한 로드가 끝났을 때 브라우저에 의해서 호출되는 함수
+
+
+Object Model
+웹브라우저의 구성요소들은 하나하나가 객체화되어 있음, 자바스크립트로 이 객체를 제어해서 웹브라우저를 제어할 수 있게 됨
+
+window - javascript -> Object, Array, Function, ...
+       - BOM -> navigator, screen, location, frames, history, XMLHttpRequest, ...
+       - DOM -> document, ...
+
+
+BOM
+BOM(Browser Object Model)이란 웹브라우저의 창이나 프래임을 추상화해서 프로그래밍적으로 제어할 수 있도록 제공하는 수단, 웹페이지의 내용을 제외한 브라우저의 각종 요소들을 객체화시킨 것, 전역객체인 Window의 프로퍼티와 메소드들을 통해서 제어
+
+- 전역객체 Window : 모든 객체가 소속된 객체이고, 전역객체이면서, 창이나 프레임을 의미함, 객체를 만든다는 것은 결국 window 객체의 프로퍼티를 만드는 것과 같음 (window.alert('Hello world'), window.a) 
+
+- Location 객체 : 문서의 주소와 관련된 객체, 윈도우 문서의 URL 정보 조회와 변경
+  현재 윈도우의 URL 알아내기 (location.toString(), location.href)
+  URL Parsing (location.protocol, location.host, location.port, location.pathname, location.search, location.hash) 
+  현재 문서를 리로드 (location.reload())
+
+- Navigator 객체 : 브라우저의 정보를 제공하는 객체, 주로 호환성 문제(크로스 브라우징)등을 위해서 사용 (navigator.appName, appVersion, userAgent, platform)
+
+- 창 제어 : window.open 메소드는 새 창을 생성 (window.open(), close()) 
+
+
+DOM
+Document Object Model. 웹페이지의 내용을 제어, window의 프로퍼티인 document 프로퍼터에 할당된 Document 객체가 이러한 작업을 담당, Document 객체는 윈도우에 로드된 문서를 의미함
+Document 객체의 프로퍼티는 문서 내의 주요 엘리먼트에 접근할 수 있는 객체를 제공 (document.body, document.images, ...)
+특정한 엘러먼트의 객체를 획득할 수 있는 메소드도 제공 (document.getElementsByTagName('body'), ..\.)
+
+jQuery
+DOM을 내부에 감추고 보다 쉽게 웹페이지를 조작할 수 있도록 돕는 도구
+$(document).ready(function() {}  // DOM이 생성되면 ready메소드가 실행됨
+$(window).ready(function() {}  // 이미지를 포함한 모든 요소들의 로드가 완료되면 load메소드가 실행됨
+
+제어 대상을 찾기
+- document.getElementsByTagName : 태그명에 해당하는 객체를 조회
+- document.getElementsByClassName : class 속성의 값을 기준으로 객체를 조회
+- document.getElementById : id 값을 기준으로 객체를 조회 (단수)
+- document.querySelector : css 선택자의 문법을 이용해서 객체를 조회 (단수)
+- document.querySelectorAll : querySelector과 기본적인 동작방법은 같지만 모든 객체를 조회
+
+javascript
+var lis = document.getElementsByTagName('li');
+for(var i=0; i<lis.length; i++){
+    lis[i].style.color='red'; 
+}
+
+jquery
+$('li').css('color', 'red');
+
+
+HTMLElement
+getElement 메소드의 실행결과가 하나인 경우 HTMLELement, 복수인 경우 HTMLCollection을 리턴
+- document.getElementById : 리턴 데이터 타입은 HTMLELement, 엘리먼트의 종류에 따라서 리턴되는 객체가 조금씩 다름
+- document.getElementsByTagName : 리턴 데이터 타입은 HTMLCollection. 유사배열
+
+DOM Tree
+모든 엘리먼트는 HTMLElement의 자식
+Node - Document - HTMLDocument
+     - CharacterData - Text, Comment
+     - Element - HTMLElement - HTMLHeadElement, HTMLBodyElement, HTMLTitleElement, HTMLParagraphElement, HTMLLIElement, ...
+     - Attr
+
+
+jQuery 객체
+jQuery 함수의 리턴값으로 jQuery 함수를 이용해서 선택한 엘리먼트들에 대해서 처리할 작업을 프로퍼티로 가지고 있는 객체
+
+암시적 반복 : DOM과 다르게 jQuery 객체의 메소드를 실행하면 선택된 엘리먼트 전체에 대해서 동시에 작업이 처리됨, 암시적 반복은 값을 설정할 때만 동작, 값을 가져올 때는 선택된 엘리먼트 중 첫번째에 대한 값만을 반환함
+
+체이닝 : 선택된 엘리먼트에 대해서 연속적으로 작업을 처리할 수 있는 방법
+
+조회 결과
+var li = $('li');
+for(var i=0; i<li.length; i++){
+    $(li[i]).css('color', 'red');  // li[i]의 값은 해당 엘리먼트에 대한 jQuery 객체가 아니라 DOM 객체
+}
+
+map
+jQuery 객체의 엘리먼트를 하나씩 순회, for each, for in문 과 비슷
+var li = $('li');
+li.map(function(index, elem){  // 인덱스, 엘리먼트 객체(DOM) 
+    console.log(index, elem);
+    $(elem).css('color', 'red');
+})
+
+jQuery 객체 API : css, attr, ...
+
+
+Element 객체
+식별자
+Element.classList  // 클래스 추가 제거가 편함, add(), remove(), toggle() 
+Element.className  // 클래스 설정 시 설정한 값으로 변함, 제어하기 불편 
+Element.id
+Element.tagName
+
+조회  // Element 객체의 조회 메소드는 해당 엘리먼트의 하위 엘리먼트를 대상으로 조회를 수행, document의 조회 메소드는 문서 전체를 대상으로 엘리먼트를 조회
+Element.getElementsByClassName
+Element.getElementsByTagName
+Element.querySelector
+Element.querySelectorAll
+
+속성
+Element.getAttribute(name)
+Element.setAttribute(name, value)
+Element.hasAttribute(name);
+Element.removeAttribute(name);
+
+var target = document.getElementById('target');
+target.setAttribute('class', 'important');  // attribute 방식
+target.className = 'important';  // property 방식, 실제 html 속성의 이름과 다른 이름을 갖는 경우가 있음 (class -> className, ...)
+
+
+jQuery 속성 제어 API
+속성은 attr, 프로퍼티는 prop 메소드를 사용
+
+var t = $('#target');
+t.attr('title', 'opentutorials.org'); // title 속성의 값을 설정한다, 인자 1개는 get, 2개는 set
+t.removeAttr('title'); // title 속성을 제거한다.
+
+// http://localhost/jQuery_attribute_api/demo2.html
+var t1 = $('#t1');
+console.log(t1.attr('href')); // ./demo.html 
+console.log(t1.prop('href')); // http://localhost/jQuery_attribute_api/demo.html, jQuery를 이용하면 프로퍼티의 이름으로 어떤 것을 사용하건 올바른 것으로 교정해줌 
+ 
+var t2 = $('#t2');
+console.log(t2.attr('checked')); // checked
+console.log(t2.prop('checked')); // true
+
+
+jQuery 조회 범위 제한
+selector context : 제한된 조회 범위
+
+find()
+find는 jQuery 객체 내에서 엘리먼트를 조회하는 기능을 제공, 체인을 끊지 않고 작업의 대상을 변경하고 싶을 때 사용
+$( "#active .marked").css( "background-color", "red" );
+$( "#active").find('.marked').css( "background-color", "red" );  // 위와 결과 같음
+$('#active').css('color','blue').find('.marked').css( "background-color", "red" );  // 체인을 끊지 않고 .marked에 속성을 설정해줌
+
+
+Node 객체
+모든 DOM 객체는 Node 객체를 상속받음
+
+관계
+엘리먼트는 서로 부모, 자식, 혹은 형제자매 관계로 연결되어 있음, 각각의 Node가 다른 Node와 연결된 정보를 보여주는 API를 통해서 문서를 프로그래밍적으로 탐색
+Node.childNodes  // 자식노드들을 유사배열에 담아서 리턴, 배열에 줄바꿈 text가 껴있음
+Node.firstChild  // 첫번째 자식노드
+Node.lastChild  // 마지막 자식노드
+Node.nextSibling  // 다음 형제 노드
+Node.previousSibling  // 이전 형제 노드
+Node.parentNode  // 부모노드
+Node.contains()
+Node.hasChildNodes()
+
+노드의 종류
+각각의 구성요소가 어떤 카테고리에 속하는 것인지를 알려주는 식별자를 제공
+Node.nodeType  // 노드의 종류에 따라서 정해진 상수가 존재 (ELEMENT_NODE 1, ATTRIBUTE_NODE 2, TEXT_NODE 3), 사용시에는 Node.TEXT_NODE가 편함  
+Node.nodeName  // LI, UL, ...
+
+값
+Node 객체의 값을 제공하는 API
+Node.nodeValue
+Node.textContent
+
+자식관리
+Node 객체의 자식을 추가하는 방법에 대한 API
+Node.appendChild()  // 노드의 마지막 자식으로 주어진 엘리먼트 추가
+Node.insertBefore()  // appendChild와 동작방법은 같으나 두번째 인자로 엘리먼트를 전달 했을 때 이것 앞에 엘리먼트가 추가됨 (firstChild를 넘겨주면 첫 번째)
+Node.removeChild()
+Node.replaceChild() // 노드 바꾸기
+
+
+jQuery 노드 변경 API
+추가
+before() - prepend() - content - append() - after()
+$('.target').before('<div>before</div>');  // 이전 형제 노드
+$('.target').after('<div>after</div>');  // 다음 형제 노드
+$('.target').prepend('<div>prepend</div>');  // 노드의 첫번째 자식으로 주어진 엘리먼트 추가
+$('.target').append('<div>append</div>');  // 노드의 마지막 자식으로 주어진 엘리먼트 추가
+
+제거
+$('#target1').remove();  // 선택된 엘리먼트를 제거
+$('#target2').empty();  // 선택된 엘리먼트의 자식들을 제거
+
+바꾸기
+$('<div>replaceAll</div>').replaceAll('#target1');  // 제어 대상을 인자로 전달
+$('#target2').replaceWith('<div>replaceWith</div>');  // 제어 대상을 먼저 지정, 기능은 replaceAll과 동일
+
+복사
+$('#source').clone();  // 선택된 엘리먼트를 복사
+
+이동
+$('#target1').append($('#source'));  // html에 이미 엘리먼트가 존재할 때 엘리먼트의 위치를 이동시켜줌
+
+
+문자열로 노드 제어
+innerHTML : 문자열로 자식 노드를 만들 수 있는 기능을 제공, 자식 노드의 값을 읽어올 수 있음
+target.innerHTML = "<li>JavaScript Core</li><li>BOM</li>
+
+outerHTML : 선택한 엘리먼트를 포함해서 처리됨
+innerText, outerText : 값을 읽을 때는 HTML 코드를 제외한 문자열을 리턴, 값을 변경할 때는 HTML의 코드를 그대로 추가
+insertAdjacentHTML() : 좀 더 정교하게 문자열을 이용해서 노드를 변경하고 싶을 때 사용 (beforebegin - afterbigin - content - beforeend - afterend)
+
+
+Document 객체
+웹브라우저에서는 HTMLDocument 객체로 사용됨, 문서 전체를 대표하는 객체
+
+노드 생성 API
+document.createElement()  // 엘리먼트 노드를 생성
+document.createTextNode()  // 텍스트 노드를 생성
+
+문서 정보 API
+title  // 문서 제목
+URL  // 문서 url
+referrer  // 문서 protocol + host
+lastModified  // 마지막 문서 수정 시간
+
+
+Text 객체
+텍스트 노드에 대한 DOM 객체로 CharcterData를 상속 받음, 실질적인 데이터가 저장되는 객체, DOM에서는 공백이나 줄바꿈도 텍스트 노드임
+
+값
+data
+nodeValue
+
+조작
+appendData() : 데이터 추가로 붙임, 인자 data
+deleteData() : 데이터 삭제, 인자 start, end
+insertData() : 데이터 삽입, 인자 start, data
+replaceData() : 데이터 교체, 인자 start, end, data
+subStringData() : 데이터 자르기, 인자 start, end
+
+생성
+docuemnt.createTextNode()
+
+
+문서의 기하학적 특성
+요소의 크기와 위치
+getBoundingClientRect() : 엘리먼트의 크기와 위치를 알고 싶을 때 사용, DOMRect {width: 300, height: 300, left: 200, top: 200, right: 500, bottom: 500, …}
+offsetWidth, Height, Left, Top, ... : 브라우저가 구버전일 때 사용
+offsetParent : 요소가 겹처있을 때 기준이 되는 엘리먼트를 나타냄, 보통 body, 부모 중 CSS position의 값이 static인 td, th, table 엘리먼트
+
+Viewport
+요소의 위치를 생각할 때 문서가 브라우저의 크기보다 큰 경우는 스크롤이 만들어지는데 스크롤에 따라서 위치의 값이 달라짐
+
+viewport의 좌표
+뷰포트는 문서의 내용 중 사용자에게 보여주는 영역을 의미함, 문서의 좌표와 별개로 뷰포트의 좌표가 존재, getBoundingClientRect()는 viewport의 좌표를 사용
+window.pageYOffset : 스크롤의 정도를 알고 싶을 때 사용
+window.scrollTo() : 스크롤 위치를 조정해줌, 인자로 x, y를 받음
+문서의 좌표 : 요소의 탑, 바텀 위치(getBoundingClientRect().top, bottom)에 스크롤 위치(window.pageYOffset)를 더하면 됨
+
+스크린의 크기
+뷰포트의 크기 : window.innerWidth, window.innerHeight
+모니터 스크린의 크기 : screen.width, screen.height 
+
+
+이벤트(event)
+어떤 사건을 의미함, 브라우저에서의 사건이란 사용자가 클릭, 스크롤, 필드의 내용을 바꾸었을 때와 같은 것을 의미
+
+event target : target은 이벤트가 일어날 객체를 의미함
+event type : 이벤트의 종류를 의미함, click, scroll, keydown, ...
+event handler : 이벤트가 발생했을 때 동작하는 코드를 의미함
+
+등록방법
+이벤트의 대상에 이벤트 핸들러를 등록해줘야 함
+inline : 이벤트를 이벤트 대상의 태그 속성으로 지정함, onclick, ...
+프로퍼티 리스너 : 이벤트 대상에 해당하는 객체의 프로퍼티로 이벤트를 등록하는 방식
+
+var t = document.getElementById('target');
+t.onclick = function(event){  // 이벤트 객체, 이벤트가 실행될 때 이벤트 핸들러의 인자로 전달됨
+   alert('Hello world, '+event.target.value);  // 이벤트가 실행된 맥락의 정보가 필요할 때 이벤트 객체를 사용
+}
+
+addEventListener() : 이벤트를 등록하는 가장 권장되는 방식, 하나의 이벤트 대상에 복수의 동일 타입 이벤트 리스너를 등록할 수 있음
+var t1 = document.getElementById('target1');
+var t2 = document.getElementById('target2');
+function btn_listener(event){
+    switch(event.target.id){  // 이벤트 객체를 이용하면 복수의 엘리먼트에 하나의 리스너를 등록해서 재사용할 수 있음 
+        case 'target1':
+            alert(1);
+            break;
+        case 'target2':
+            alert(2);
+            break;
+    }
+}
+t1.addEventListener('click', btn_listener);  
+t2.addEventListener('click', btn_listener);
+
+
+이벤트 전파(버블링과 캡처링)
+HTML 태그는 중첩되어 있기 때문에 특정한 태그에서 발생하는 이벤트가 중첩되어 있는 태그들 모두에 대상이 될 수 있음, 중첩된 태그들에 이벤트가 등록 되어 있다면
+
+캡쳐링 : 이벤트가 부모에서부터 발생해서 자식으로 전파됨, addEventListener의 3번째 인자가 true, ie 낮은 버전에서는 작동하지 않음 
+버블링 : 이벤트가 자식부터 발생해서 부모로 전파됨, addEventListener의 3번째 인자가 false (기본설정)
+
+event.eventPhase : capturing 1, target 2, bubbling 3, 전파방식 상태를 나타냄
+event.stopPropagation() : 이벤트 전파를 중간에 가로막음
+
+
+기본동작의 취소
+웹브라우저의 구성요소들의 기본적인 동작 방법(input에 포커스 후 텍스트 입력, form submit 버튼 데이터 전송, a 태그 href 속성의 URL 이동)을 취소함
+
+inline : 이벤트의 리턴값이 false이면 기본 동작이 취소됨
+
+<a href="http://opentutorials.org" onclick="if(document.getElementById('prevent').checked) return false;">opentutorials</a>
+
+property 방식 : 리턴 값이 false이면 기본동작이 취소됨
+
+document.querySelector('a').onclick = function(event){
+    if(document.getElementById('prevent').checked) return false;
+};
+
+addEventListener 방식 : 이벤트 객체의 preventDefault 메소드를 실행하면 기본 동작이 취소됨
+
+document.querySelector('a').addEventListener('click', function(event){
+    if(document.getElementById('prevent').checked) event.preventDefault();
+});
+
+
+이벤트 타입
+폼
+submit : 폼의 정보를 서버로 전송하는 명령인 submit시에 일어남, form 태그에 적용됨
+change : 폼 컨트롤의 값이 변경 되었을 때 발생, input(text,radio,checkbox), textarea, select 태그에 적용됨
+focus, blur : focus는 엘리먼트에 포커스가 생겼을 때, blur은 포커스가 사라졌을 때 발생, <base>, <bdo>, <br>, <head>, <html>, <iframe>, <meta>, <param>, <script>, <style>, <title>을 제외한 모든 태그에서 발생
+
+문서 로딩
+load : load 이벤트는 문서내의 모든 리소스(이미지, 스크립트)의 다운로드가 끝난 후에 실행됨, 애플리케이션의 구동이 지연됨, window 객체에 사용
+DOMContentLoaded : DOMContentLoaded 이벤트는 문서에서 스크립트 작업을 할 수 있을 때 실행되기 때문에 이미지 다운로드를 기다릴 필요가 없음, window 객체에 사용
+
+마우스
+이벤트 타입
+lick : 클릭했을 때 발생하는 이벤트. 
+dblclick : 더블클릭을 했을 때 발생하는 이벤트
+mousedown : 마우스를 누를 때 발생
+mouseup : 마우스버튼을 땔 때 발생
+mousemove : 마우스를 움직일 때
+mouseover : 마우스가 엘리먼트에 진입할 때 발생
+mouseout : 마우스가 엘리먼트에서 빠져나갈 때 발생
+contextmenu : 컨텍스트 메뉴(우클릭시 박스)가 실행될 때 발생
+
+키보드 조합 : 특수키(alt, ctrl, shift)가 눌려진 상태를 감지해야 한다면 이벤트 객체의 프로퍼티를 사용, true, false를 가짐
+event.shiftKey
+event.altKey
+event.ctrlKey
+
+마우스 포인터 위치 : event 객체의 clientX와 clientY를 사용
+
+
+jQuery 이벤트
+$('#jquery').on('click', function(event){  // addEventListner 방식과 동일
+    alert('jQuery');
+})
+
+on API 사용법
+jQuery에서 가장 중요한 이벤트 API
+.on( events [, selector ] [, data ], handler(eventObject) )
+event : 등록하고자 하는 이벤트 타입을 지정함 (예: "click")
+selector : 이벤트가 설치된 엘리먼트의 하위 엘리먼트를 이벤트 대상으로 필터링함
+data : 이벤트가 실행될 때 핸들러로 전달될 데이터를 설정함
+handler : 이벤트 핸들러 함수
+
+selector
+$('ul').on('click','a, li', function(event){  // ul엘리먼트의 하위 엘리먼트 중 a,li엘리먼트들에 대해서만 이벤트 발생, ul엘리먼트는 이벤트가 발생하지 않음
+    console.log(this.tagName);
+})
+
+late binding : jQuery는 존재하지 않는 엘리먼트에도 이벤트를 등록할 수 있는 기능을 제공, on 메서드 인자로 selector를 주면 됨, 단 $로 선택한 앨리먼트는 존재해야함
+
+다중 바인딩
+하나의 엘리먼트에 여러개의 이벤트 타입을 동시에 등록하는 방법
+$('#target').on('focus blur', function(e){  // 띄어쓰기로 이벤트를 구분
+    $('#status').html(e.type);
+})
+
+이벤트에 따라서 다른 핸들러를 실행해야 할 때 인자를 객체로 주고 메서드를 정의
+$('#target').on(
+    {
+        'focus' : function(e){  // 익명함수를 사용 
+        }, 
+        'blur' : function(e){             
+        }
+    }
+)
+
+이벤트 제거 : off 메서드를 사용, 인자로 on 메서드를 사용했을 때의 인자와 같은 값을 줌
+
+
+네트워크 통신
+Ajax(Asynchronous JavaScript and XML)
+자바스크립트를 이용해서 비동기적으로 웹서버와 웹브라우저가 데이터를 주고 받는 방식, XML보다 JSON을 더 많이 사용, 웹페이지의 로딩 없이 변경된 결과를 웹페이지에 반영할 수 있게 함 
+
+JSON(JavaScript Object Notation)
+JavaScript에서 객체를 만들 때 사용하는 표현식, 데이터의 용량이 작음, XML을 대체해서 설정의 저장이나 데이터를 전송등에 많이 사용 됨
+
+JSON.parse() : 인자로 전달된 json 문자열을 자바스크립트의 데이터 형식으로 변환한다.
+JSON.stringify() : 인자로 전달된 자바스크립트의 데이터를 json 문자열로 변환한다
+
+XMLHttpRequest : Ajax를 쓸 때 사용하는 API
+
+서버에서 데이터 받기
+GET 방식
+["Asia\/Seoul","America\/New_York"]
+
+var xhr = new XMLHttpRequest();  // XMLHttpRequest 객체를 생성
+xhr.open('GET', './time2.json');  // 접속하려는 대상을 지정, open 메서드의 인자는 method, action
+xhr.onreadystatechange = function(){  // onreadystatechange 이벤트는 서버와의 통신이 끝났을 때 호출되는 이벤트
+    if(xhr.readyState === 4 && xhr.status === 200){  // status는 HTTP 통신의 결과를 나타냄, 4는 통신이 완료되었음, 200은 통신이 성공했음을 의미
+        var _tzs = xhr.responseText;  // 요청결과를 받음
+        var tzs = JSON.parse(_tzs);  // 서버에서 전송한 JSON 데이터를 JavaScript의 데이터 형식으로 만듬
+        var _str = '';
+        for(var i = 0; i< tzs.length; i++){  
+            _str += '<li>'+tzs[i]+'</li>';  // html 가공
+        }
+        _str = '<ul>'+_str+'</ul>';
+        document.querySelector('#timezones').innerHTML = _str;  // 엘리먼트에 html 적용
+    }
+}
+xhr.send();  //send 메서드, 준비된 요청을 서버에 전달 
+
+서버로 데이터 전송
+POST 방식
+var xhr = new XMLHttpRequest();  // XMLHttpRequest 객체를 생성
+xhr.open('POST', './time3.json');  // 접속하려는 대상을 지정, open 메서드의 인자는 method, action
+xhr.onreadystatechange = function(){  // onreadystatechange 이벤트는 서버와의 통신이 끝났을 때 호출되는 이벤트
+    document.querySelector('#time').innerHTML = xhr.responseText;  // 요청결과를 받아 엘리먼트에 적용
+}
+var data = new Object();
+data.timezone = document.getElementById('timezone').value;  // data 객체 프로퍼티에 값 저장
+data.format = document.getElementById('format').value;
+xhr.setRequestHeader("Content-Type", "application/json");  // 서버로 전송할 데이터 타입의 형식(MIME)을 지정
+xhr.send(JSON.stringify(data));  // 인자로 전달된 자바스크립트의 데이터를 json 문자열로 변환하여 서버로 데이터 전송
+
+
+jQuery Ajax
+jQuery이용해서 Ajax를 사용하게 되면 많은 이점이 있는데 그 중의 하나가 크로스브라우징의 문제를 jQuery가 알아서 해결해줌
+
+$.ajax
+jQuery.ajax( [settings ] )
+setting는 Ajax 통신을 위한 옵션을 담고 있는 객체가 들어감
+url : action 주소
+method : 데이터를 전송하는 방법을 지정함, get, post를 사용할 수 있음
+dataType : 서버로부터 전달 받기를 원하는 데이터 타입 [xml, html, json, text...], 형식을 지정하지 않으면 jQuery가 알아서 판단함
+data : 서버로 전달될 데이터 [PlainObject / String / Array]
+error : 실패했을 때 호출할 콜백을 지정함, Function( jqXHR jqXHR, String textStatus, String errorThrown )
+success : 성공했을 때 호출할 콜백을 지정함, Function( PlainObject data, String textStatus, jqXHR jqXHR )
+
+GET 방식
+$.ajax({
+    url:'./time.json',
+    success:function(data){  // 통신이 성공했을 때 호출됨, 서버로부터 data를 받음
+        $('#time').append(data);  // json 데이터를 알아서 해석해줘서 따로 변환할 필요가 없음
+    }
+})
+
+POST 방식
+$.ajax({
+    url:'./time2.json',  // action
+    type:'post',  // method, default get방식
+    data:$('form').serialize(),  // serialize() 메서드, form 태그의 정보를 값의이름(name)=값의내용(value)&값 의 형식으로 바꿔줌, 서버로 데이터 전송 
+    success:function(data){  // 통신이 성공했을 때 호출됨, 서버로부터 data를 받음
+        $('#time').text(data);
+    }
+})
+
+ajax로 파일(multipart/form-data) 전송하기
+$.ajax({
+    url:"/ajax/upload/profile",  
+    method:"POST",   
+    dataType:"json",
+    data:form,  // 폼데이터객체를 데이터로 넘김
+    mimeType:"multipart/form-data", 
+    contentType:false,  // 서버로 보내는 데이터의 형식 지정, false 로 선언 시 content-type 헤더가 multipart/form-data로 전송되게 함
+    processData:false, // false로 선언 시 data의 폼데이터객체를 string으로 변환하지 않음
+    error:function(){
+        alert("error");
+    },
+    success:function(json){
+        ...
+    }
+}) 
+
+
+
