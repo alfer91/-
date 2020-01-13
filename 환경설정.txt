@@ -71,8 +71,8 @@ JAVA_HOME 환경 변수 설정
 템플릿 사용 : sysout, main, try, for + Ctrl + Space 자동완성 
 다음 줄부터 줄 바꿈 : Shift + Enter
 줌 인, 줌 아웃 : Ctrl + = , Ctrl + -
-Override/Implement Methods : Ctrl + Shift + S,V
-Getter/Setter Methods : Ctrl + Shift + S,R -> Alt + A -> Alt + S -> Enter
+Override/Implement Methods : Alt + Shift + S,V
+Getter/Setter Methods : Alt + Shift + S,R -> Alt + A -> Alt + S -> Enter
 파일에서 검색 : Ctrl + H (*.java,*jsp)
 
 스프링 정리

@@ -1,0 +1,2335 @@
+spring
+
+목록
+1. 환경설정
+2. 스프링 프로젝트 구조
+3. 라이브러리 설정
+4. 어노테이션
+5. 프로젝트 로딩 구조
+6. MVC 동작 순서
+7. 스프링 MVC 프로젝트 기본 구성
+8. 각 영역의 Naming Convention(명명 규칙)
+9. 패키지의 Naming Convention
+10. 프로젝트 구현 순서
+10-1. 영속 계층의 CRUD 구현
+10-2. 비즈니스 계층의 CRUD 구현
+10-3. 프리젠테이션(웹) 계층의 CRUD 구현
+10-4. 화면 처리
+10-4-1. 한글 문제와 UTF-8 필터 처리
+11. 오라클 데이터베이스 페이징 처리
+12. MyBatis와 스프링에서 페이징 처리
+13. 페이징 화면 처리
+14. 검색 처리
+15. REST 방식으로 전환
+16. Ajax 댓글 처리
+
+
+ex
+1. 환경설정
+1-1. JDBC 테스트 코드 (ojdbc6 추가 이후)
+1-2. 커넥션 풀 설정
+1-2-1. 커넥션 풀 테스트
+1-3. mybatis와 스프링 연동
+1-3-1. mapper 테스트
+1-4. log4jdbc-log4j2 설정
+2. Controller의 파라미터 수집(바인딩)
+2-1. SampleDTO의 setter 메서드가 동작하면서 파라미터를 수집
+2-2. 변수명과 파라미터의 이름이 다른 경우에 유용
+2-3. 리스트, 동일한 이름의 파라미터가 여러 개 전달되는 경우
+2-4. 배열, 동일한 이름의 파라미터가 여러 개 전달되는 경우
+2-5. 객체 리스트
+2-6. @InitBinder, 파라미터를 변환해서 처리해야 하는 경우('2018-01-01' -> Date)
+2-7. @DateTimeFormat, 파라미터를 변환해서 처리해야 하는 경우('2018-01-01' -> Date), @InitBinder가 필요없음
+3. Model이라는 데이터 전달자
+3-1. Model, addAttribute메서드로 key, value 담아 화면에 전달
+3-2. @ModelAttribute, 기본형 파라미터를 Model에 담아 전달할 경우 사용
+3-3. @RedirectAttribute
+4. Controller의 리턴 타입
+4-1. void 타입
+4-2. String 타입
+4-3. 객체 타입 VO(Value Objext), DTO(Data Transfer Object), JSON 데이터를 만들어 내는 용도로 사용, jackson-databind 라이브러리 필요
+4-4. ResponseEntity 타입, HTTP 프로토콜의 원하는 헤더 정보나 데이터를 전달, 개발자 도구 - Network에서 확인 가능
+5. 파일 업로드 처리
+6. 404 에러 페이지 처리
+7. 영속 영역의 CRUD 구현
+7-1. create(insert) 처리
+7-1-1. insert만 처리되고 생성된 PK 값을 알 필요가 없는 경우
+7-1-2. insert문이 실행되고 생성된 PK 값을 알아야 하는 경우
+7-2. read(select) 처리
+7-3. delete 처리
+7-4. update 처리
+8. 비즈니스 계층
+8-1. service 인터페이스 작성
+8-2. serviceImpl 클래스 구현, 영속 계층 Bean 주입 (@Service, @Setter, @Autowired) / XML 처리
+8-3. 작성한 비즈니스 계층의 테스트
+9. 프리젠테이션(웹) 계층의 CRUD 구현
+9-1. 원하는 기능을 호출하는 방식을 정리
+9-2. Controller작성
+9-3. Controller 테스트
+10. 화면처리
+10-1. jstl
+10-1. jstl 외 jQuery, bootstrap, javascript
+10-2. 한글 문제와 UTF-8 필터 처리
+10-3. 뒤로 가기 문제 처리 
+10-4. form 처리
+11. 오라클 데이터베이스 페이징 처리
+11-1. 실행 계획(execution plan)과 order by
+11-2. order by 보다는 인덱스를 사용
+11-3. 오라클 힌트(hint)
+11-4. 인라인뷰(in-line View)
+12. MyBatis와 스프링에서 페이징 처리
+12-1. 페이징 처리를 위한 클래스 생성 (필요한 파라미터 페이징 번호(pageNum), 한 페이지당 데이터(amount))
+12-2. MyBatis 처리와 테스트
+12-3. service 수정과 테스트
+12-4. controller 수정과 테스트
+13. 페이징 화면 처리
+13-1. 페이징 처리를 위한 클래스 설계
+13-2. JSP에서 페이지 번호 출력
+13-3. 페이지 번호 이벤트 처리
+13-4. 조회 페이지로 이동 
+13-5. 조회 페이지에서 다시 목록 페이지로 이동, 수정 페이지로 이동도 적용 - 페이지 번호 유지
+13-6. 수정과 삭제 처리
+13-7. 수정/삭제 페이지에서 목록 페이지로 이동
+13-8. MyBatis에서 전체 데이터의 개수 처리
+14. 검색 처리
+14-1. 검색 조건 처리를 위한 Criteria의 변화
+14-2. mapper.xml에서 Criteria 처리
+14-3. BoardMapperTests
+14-4. 목록 화면에서의 검색 처리
+14-5. 검색 버튼의 이벤트 처리
+14-6. 다른 페이지에 검색 조건과 키워드 전달
+14-7. 조회 페이지에서 검색 처리
+14-8. 수정/삭제 페이지에서 검색 처리
+14-9. 수정/삭제 처리는 BoardController에서 redirect 방식으로 동작하므로 type과 keyword 조건을 같이 리다이렉트 시 포함시켜줌
+14-10. 필요한 파라미터만 전달하기 위해 form 태그 내용 수정
+14-11. UriComponentsBuilder를 이용하는 링크 생성
+14-12. RedirectAttributes addAttribute, addFlashAttribute 차이
+15. REST 방식으로 전환
+
+
+
+
+환경설정
+
+STS(Spring Tool Suite) 설정
+구글 - sts 검색 - eclipse 버전에 맞는 sts 주소 복사 - eclipse Help - Install New Software - Select All 설치
+
+Tomcat 서버 설정
+tomcat 설치 - eclipse Window - Preferences - Server - Runtime Environments - Add tomcat 경로 지정
+
+스프링 프로젝트 생성
+eclipse File - New - Spring Legacy Project - Spring MVC Project - 패키지명 지정
+
+프로젝트 생성 시 에러가 발생하는 경우
+현재 사용자 폴더 내 .m2 - repository 폴더의 내용물 삭제 후 eclipse 재시작 (Maven에서 스프링 관련 jar 파일들을 다운로드 중에 발생하는 경우가 대부분)
+
+Context root 변경
+server에서 project 제거 후 - project properties - Web Project Settiings - Context root / Apply
+
+
+
+
+
+스프링 프로젝트 구조
+Java Resources
+- src/main/java                  : 작업되는 코드의 경로
+- src/main/resources             : 실행할 때 참고하는 기본 경로(주로 설정 파일들을 넣는다)
+- src/test/java                  : 테스트 코드를 넣는 경로
+- src/test/resources             : 체스트 관련 설정 파일 보관 경로
+
+webapp/WEB-INF/spring/appServlet
+- servlet-context.xml            : 웹과 관련된 스프링 설정 파일
+
+webapp/WEB-INF/spring
+- root-context.xml               : 스프링 설정 파일
+
+webapp/WEB-INF/views             : 템플릿 프로젝트의 jsp 파일 경로
+- home.jsp        
+
+webapp/WEB-INF
+- web.xml                        : Tomcat의 web.xml 파일
+
+project
+- pom.xml                        : Maven이 사용하는 pom.xml
+
+
+
+
+
+라이브러리 설정
+maven-compiler-plugin : java version 1.8으로 변경, Maven - Update Project
+javax.servlet-api     : 3.1.0
+
+테스트
+spring-test
+junit                 : 4.12, scope test
+
+Lombok
+lombok                : lombok 설치 필요
+
+데이터베이스
+HikariCP              : 커넥션 풀
+ojdbc6                : jdbc, 11g 까지는 maven 안됨, 직접 추가 해줘야 함
+spring-jdbc           : jdbc와 스프링 연동
+spring-tx             : 트랜잭션과 스프링 연동
+
+마이바티스
+mybatis               : SQL 매핑 프레임워크
+mybatis-spring        : Mybatis와 스프링 연동 
+
+JSON
+jackson-databind      : json 데이터 처리
+jackson-dataformat-xml: xml 데이터 처리
+gson                  : java 인스턴스를 json 타입의 문자열로 변환 
+
+파일 업로드
+commons-fileupload
+
+로그
+log4j                 : 1.2.17, 1.2.15의 경우 lombok 사용 시 문제가 생길 수 있음
+log4jdbc-log4j2-jdbc4 : SQL 파라미터 확인
+
+
+Lombok 설정
+구글 - lombok 검색, 다운 - cmd - java -jar lombok.jar 실행 - 설치된 eclipse 경로 지정 - eclipse 경로에서 lombok.jar 확인 - eclipse 바로가기 재생성, 재실행
+
+JDBC 연결 설정
+ojdbc6.jar : Oracle 데이터베이스의 JDBC Driver는 11g까지 공식적으로 Maven으로 지원되지 않음, 직접 jar 파일을 프로젝트에 추가시켜줘야함
+eclipse WEB-INF/lib/ojdb6.jar 위치 - project properties - Java Build Path, ADD JARs - Deployment Assembly, Add - Java Build Path Entries
+
+커넥션 풀 설정
+데이터베이스와 미리 연결을 맺어두고 반환, java에서는 DataSource 인터페이스를 통해서 커넥션 풀을 사용, 여러 종류가 있음(HikariCP, commons-dbcp, ...)
+
+SQL 로그 설정
+log4jdbc-log4j2-jdbc4 : SQL에 전달되는 파리미터가 ? 로 표시되는 것을 변환해줌
+src/main/resources - log4jdbc.log4j2.properties 파일 필요 - log4jdbc.spylogdelegator.name=net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator
+root-context.xml - driverClassName, jdbcUrl 변경 - "net.sf.log4jdbc.sql.jdbcapi.DriverSpy", "jdbc:log4jdbc:oracle:thin:@localhost:1521:xe"
+src/test/resources - log4j.xml 설정 추가 - "jdbc.audit", "jdbc.resultset", "jdbc.connection" info에서 warn으로 로그 레벨을 바꿔줌
+
+MyBatis와 스프링 연동
+MyBatis : SQL 매핑(mapping) 프레임워크
+mybatis-spring 라이브러리를 통해 스프링과 연동
+
+
+root-context.xml
+스프링이 로딩되면서 읽는 문서, 주로 이미 만들어진 클래스들, 외부 jar 파일 등을 사용하는 클래스들을 빈(Bean)으로 등록할 때 사용
+namespaces - beans, context, mybatis-spring
+
+
+servlet-context.xml
+서블릿 관련 설정
+namespaces - beans, context, mvc
+
+
+
+
+어노테이션
+
+Spring
+@Component               : 해당 클래스가 스프링에서 객체로 만들어서 관리하는 대상임을 명시
+@ComponentScan           : <context:component-scan /> 해당 패키지에 있는 클래스들을 조사, @Component가 존재하는 클래스들을 객체로 생성해서 빈으로 관리하게 함
+@MapperScan              : <mybatis-spring:scan /> 지정된 패키지의 모든 mybatis 관련 어노테이션을 찾아서 처리
+@Autowired               : 스프링 내부에서 자신이 특정한 객체에 의존적이므로 자신에게 해당 타입의 빈을 주입해주라는 표시
+@Controller
+@RequestMapping
+
+REST 방식
+@RestController          : Controller가 REST 방식을 처리하기 위한 것임을 명시
+@ResponseBody            : 일반적인 JSP와 같은 뷰로 전달되는 게 아니라 데이터 자체를 전달하는 용도
+@PathVariable            : URL 경로에 있는 값을 파라미터로 추출하려고 할 때 사용
+@RequestBody             : JSON 데이터를 원하는 타입으로 바인딩 처리
+
+Lombok
+@Data                    : @ToString, @EqualsAndHashCode, @Getter/@Setter, @RequiredArgsConstructor를 모두 결합한 형태
+@Getter
+@Setter
+@AllArgsConstructor      : 인스턴스 변수로 선언된 모든 것을 파라미터로 받는 생성자를 생성
+@RequiredArgsConstructor : @NonNull이나 final이 붙은 인스턴스 변수에 대한 생성자를 생성
+@NonNull
+@Log4j
+
+MyBatis
+@Select
+
+Test
+@RunWith                 : 테스트 시 필요한 클래스를 지정
+@ContextConfiguration    : 스프링이 실행되면서 어떤 설정 정보를 읽어야 하는지를 명시
+@Test                    : 해당 메서드가 jUnit 상에서 단위 테스트의 대상이라고 명시
+
+
+
+
+
+프로젝트 로딩 구조
+web.xml - ContextLoaderListener 가장 먼저 구동 - contextConfigLocation - root-context.xml - 객체(Bean)들이 스프링 영역(context)에 생성
+- DispatcherServlet 서블릿 관련 설정 동작 - servlet-context.xml - 등록된 객체(Bean)들 생성 후 기존에 만들어진 객체(Bean)들과 연동
+
+
+
+
+MVC 동작 순서
+1. DispatcherServlet(Front-Controller)을 통해 사용자의 Request를 처리
+2. HandlerMapping은 @RequestMapping 어노테이션이 적용된 것을 기준으로 Request의 처리를 담당하는 컨트롤러를 찾음
+3. Controller는 view에 전달해야 하는 데이터를 Model에 담아 전달
+4. ViewResolver는 Controller가 반환한 결과를 어떤 View를 통해 처리하는 것이 좋을지 해석
+5. View는 실제로 응답 보내야 하는 데이터를 jsp 등을 이용해서 생성하는 역할
+6. DispatcherServlet(Front-Controller)을 통해 View에서 만들어진 응답을 전송
+
+
+
+스프링 MVC 프로젝트 기본 구성
+
+Spring MVC <-> Spring Core <-> mybatis-spring <-> MyBatis <-> DB
+
+Spring MVC  : presentation tier(화면 계층)을 구성, root-context.xml, servlet-context.xml이 해당 영역의 설정을 담당
+Spring Core : POJO(Plain-Old-Java-Object)의 영역, 스프링의 의존성 주입을 이용해서 객체 간의 연관구조를 완성해서 사용
+MyBatis     : 현실적으로 mybatis-spring을 이용해서 구성하는 영역, SQL에 대한 처리를 담당
+
+Presentation tier(화면 계층)  : Servlet/jsp나 Spring MVC가 담당하는 영역, 화면 구성
+Business Tier(비지니스 계층)  : 순수한 비즈니스 로직을 담고 있는 영역, 고객이 원하는 요구사항을 반영하는 계층, xxxService
+Persistence Tier(데이터 계층) : 데이터를 어떤 방식으로 보관하고, 사용하는가(주로 데이터베이스)에 대한 설계가 들어가는 계층, MyBatis, mybatis-spring
+
+
+
+
+각 영역의 Naming Convention(명명 규칙)
+xxxController              : Controller 클래스 설계
+xxxService, xxxServiceImpl : 비즈니스 영역을 담당하는 인터페이스, 구현 클래스
+xxxDAO, xxxRepository      : DAO(Data-Access-Object), Repository(저장소) or MyBatis Mapper 인터페이스
+VO, DTO                    : VO(read only, 테이블 관련 데이터), DTO(데이터 수집 용도, 로그인 정보)
+
+
+
+
+패키지의 Naming Convention
+.config              : 프로젝트 관련 설정 클래스
+.controller          : 스프링 MVC의 Controller
+.service             : 스프링의 Service 인터페이스와 구현 클래스
+.domain              : VO, DTO 클래스
+.persistence(mapper) : MyBatis Mapper 인터페이스
+.exception           : 웹 관련 예외처리 
+.aop                 : 스프링 AOP
+.security            : 스프링 Security
+.util                : 각종 유틸리티 클래스
+
+
+
+
+프로젝트 구현 순서
+
+영속 계층의 CRUD 구현
+1. 테이블의 칼럼 구조를 반영하는 VO(Value Object) 클래스 생성
+2. MyBatis의 Mapper 인터페이스의 작성 / XML 처리
+3. 작성한 Mapper 인터페이스의 테스트
+
+
+
+비즈니스 계층의 CRUD 구현
+Business(구매 서비스) <-> Persistence tier(상품 처리 객체, 회원 처리 객체)
+1. service 인터페이스 작성
+2. serviceImpl 클래스 구현, 영속 계층 Bean 주입 (@Service, @Setter, @Autowired) / XML 처리
+3. 작성한 비즈니스 계층의 테스트
+
+
+
+프리젠테이션(웹) 계층의 CRUD 구현
+Tomcat(WAS)을 실행하지 않고 Controller를 테스트
+1. 원하는 기능을 호출하는 방식을 정리
+2. Controller작성
+3. Controller 테스트
+
+
+
+화면 처리
+JSP, JavaScript(jQuery), CSS, HTML
+1. 화면의 흐름 파악 (URL, method)
+/board/list -> /board/register                  -> /board/list(with 결과)
+            -> /board/get      -> /board/modify -> /board/list(with 결과)
+2. bootstrap 이용, 정적자원들의 경로 확인, 개발자 도구 - network 파일 상태 확인
+3. footer, header 파일 분리, jQuery는 header에 위치 시킴
+4. jstl, el을 사용해서 데이터 출력
+5. 한글 문제와 UTF-8 필터 처리
+
+
+
+
+한글 문제와 UTF-8 필터 처리
+1. 데이터 전송 시 header의 Form Data에서 한글 확인 (브라우저는 한글을 문제없이 보냄)
+2. 로그에서 SQL에 주입되는 데이터가 한글인지 확인 (Controller, 데이터베이스 문제)
+3. web.xml에 필터 추가
+
+
+
+
+뒤로 가기 문제 처리 
+뒤로 가기 사용 시 모달 창의 재실행으로 인해 window의 history 객체(스택 구조로 동작) 이용
+현재 페이지에서 모달 창을 보여줄 필요가 없다는 표시(*)를 해줌 
+                                                               /board/register 
+                                          /board/list     ->   /board/list *
+                     /board/register ->   /board/register ->   /board/register 
+/board/list *   ->   /board/list *   ->   /board/list *   ->   /board/list *  
+
+
+
+
+오라클 데이터베이스 페이징 처리
+
+1. 데이터베이스에 전달된 SQL문 처리 과정
+SQL 파싱 -> SQL 최적화 -> SQL 실행
+
+SQL 파싱   : 실행해야 하는 대상 객체의 테이블, 제약 조건, 권한 등을 검사
+SQL 최적화 : SQL이 실행되는데 필요한 비용(cost)을 계산, 계산된 값을 기초로 실행 계획을 세움 
+SQL 실행   : 세워진 실행 계획을 통해 데이터를 읽는 작업을 처리
+
+
+2. 인덱스
+색인, 식별자, 정렬이 이미 되어 있음, SORT 과정을 생략 가능, 데이터베이스 테이블에 PK를 부여하면 인덱스가 생성됨
+
+
+3. 실행 계획(execution plan)과 order by
+SQL을 데이터베이스에서 어떻게 처리할 것인가에 대한 것, sqldeveloper의 계획 설명(F10)으로 확인 가능
+안쪽에서 바깥쪽, 위에서 아래 순서로 봄
+
+
+4. order by 보다는 인덱스를 사용
+- SORT를 하지 않음
+- TBL_BOARD를 바로 접근하지 않고 PK_BOARD를 이용해서 접근
+- BY INDEX ROWID, RANGE SCAN DESENDING로 접근
+
+
+5. 오라클 힌트(hint)
+개발자가 데이터베이스에 어떤 방식으로 실행해 줘야 하는지를 명시, 강제성을 부여
+힌트 구문은 에러가 나도 SQL 실행에 지장을 주지 않으므로 select문 작성 후 실행 계획을 확인해줘야함
+정확한 사용 방법을 모를 시 정렬, 페이징 처리가 필요한 부분을 제외하고 사용 자제
+FULL, INDEX_ASC, INDEX_DESC 힌트
+
+
+6. rownum
+테이블에는 존재하지 않고, 테이블에서 가져온 데이터를 이용해서 번호를 매김
+데이터 조회 후 정렬(sort)이 일어난 경우 rownum 순서 섞임, 인덱스를 이용해 접근
+rownum > 10, 테이블에 처음 나오는 rownum이 1이므로 결과가 아무것도 나오지 않음, SQL 작성할 때 rownum 조건은 반드시 1을 포함해야 함
+
+
+7. 인라인뷰(in-line View)
+select문 안쪽 from에 다시 select문, select문의 결과를 다시 대상으로 삼아서 select하는 것
+rownum이 붙은 select 결과를 인라인 뷰에서 추출해 사용함으로 rownum 조건제약에서 벗어남, 페이징 처리에 사용
+
+
+
+
+MyBatis와 스프링에서 페이징 처리
+1. 페이징 처리를 위한 클래스 생성 (필요한 파라미터 페이징 번호(pageNum), 한 페이지당 데이터(amount))
+2. MyBatis 처리와 테스트
+3. service 수정과 테스트
+4. controller 수정과 테스트
+
+
+
+
+페이징 화면 처리
+- 브라우저 주소창에서 페이지 번호를 전달해서 결과를 확인하는 단계
+- JSP에서 페이지 번호를 출력하는 단계
+- 각 페이지 번호에 클릭 이벤트 처리
+- 전체 데이터 개수를 반영해서 페이지 번호 조절
+
+
+조회 페이지 <-> 목록 페이지 <-> 수정/삭제 페이지
+
+
+페이징 처리할 때 필요한 정보들
+- 현재 페이지 번호(page)
+- 이전과 다음으로 이동 가능한 링크의 표시 여부(prev, next)
+- 화면에서 보여지는 페이지의 시작번호와 끝 번호(startPage, endPage)
+
+
+끝 페이지 번호와 시작 페이지 번호
+페이징의 끝 번호(endPage) 계산 (끝 번호부터 계산하는 것이 편함)
+this.endPage = (int)(Math.ceil(페이지번호 / 10.0)) * 10;  // 10은 화면에 보이는 페이지 번호 갯수, 1page : 10, 10page : 10, 11page : 20
+페이징의 시작 번호(startPage) 계산
+this.startPage = this.endPage - 9;                        // (10-1)
+
+
+끝 번호(endPage)는 전체데이터 수(total)에 의해 영향을 받음
+total을 통한 endPage의 재계산
+realEnd = (int) (Math.ceil((total * 1.0) / amount);       // 전체 데이터 수 / 한 페이지당 출력되는 데이터 수
+if(realEnd < this.endPage) {
+	this.endPage = realEnd;                           // endPage 수정
+}
+
+
+이전(prev)과 다음(next)
+이전(prev) 계산
+this.prev = this.startPage > 1;                          // 시작 번호가 1보다 큰 경우 존재
+다음(next) 계산
+this.next = this.endPage < realEnd;                       // realEnd가 끝 번호(endPage)보다 큰 경우 존재
+
+
+페이징 처리를 위한 클래스 설계, JSP에서 페이지 번호 출력, 페이지 번호 이벤트 처리, 조회 페이지로 이동, 
+조회 페이지에서 다시 목록 페이지로 이동, 수정 페이지로 이동도 적용 - 페이지 번호 유지, 수정과 삭제 처리, 수정/삭제 페이지에서 목록 페이지로 이동, 
+MyBatis에서 전체 데이터의 개수 처리
+
+
+
+
+검색 처리
+검색 기능과 SQL
+제목/내용/작성자와 같이 단일 항목 검색
+제목 or 내용, 제목 or 작성자, 내용 or 작성자, 제목 or 내용 or 작성자와 같은 다중 항목 검색
+
+SQL에서 AND와 OR가 섞여있는 경우 AND의 우선 순위가 높음, 우선 순위 연산자 '()'를 이용해서 OR 조건들을 처리해야 함
+
+MyBatis의 동적 SQL
+동적 태그 기능을 통해 SQL을 파라미터들의 조건에 맞게 조정할 수 있는 기능을 제공
+MyBatis의 동적 태그들
+if                       : if
+choose (when, otherwise) : if ~ else 
+trim (where, set)        : 검색 조건에서 where, and, or 등 필요한 키워드 조작
+foreach                  : foreach
+
+검색 조건 처리를 위한 Criteria의 변화
+BoardMapper.xml에서 Criteria 처리
+BoardMapperTests
+
+
+화면에서 검색 조건 처리
+페이지 번호가 파라미터로 유지되었던 것처럼 검색 조건과 키워드 역시 항상 화면 이동 시 같이 전송되어야 함
+화면에서 검색 버튼을 클릭하면 새로 검색을 한다는 의미이므로 1페이지로 이동함
+한글의 경우 GET 방식으로 이동하는 경우 문제가 생길 수 있으므로 주의해야 함
+
+
+
+
+REST 방식으로 전환
+REST(Representational State Transfer) : 하나의 URI는 하나의 고유한 리소스(Resource)를 대표하도록 설계된다는 개념에 전송방식을 결합해서 원하는 작업을 지정함
+
+@RestController의 반환 타입
+- 단순 문자열 반환
+- 객체의 반환
+- 컬렉션 타입의 객체 반환
+- ResponseEntity 타입
+
+@RestController에서 파라미터
+- @PathVariable
+- @RequestBody
+
+@REST 방식의 테스트
+- JUnit 기반의 테스트
+- Chrome 확장 프로그램 'Restlet Client'
+
+다양한 전송방식
+- 등록(Create) / POST   / /members/new
+- 조회(Read)   / GET    / /members/{id}
+- 수정(Update) / PUT    / /members/{id} + body (json 데이터 등)
+- 삭제(Delete) / DELETE / /members/{id}
+
+
+
+
+Ajax 댓글 처리
+댓글 처리를 위한 영속 영역(테이블 생성)
+ReplyVO 클래스 추가
+ReplyMapper 인터페이스와 XML 처리
+ReplyMapper 테스트
+CRUD 작업
+@Param 어노테이션과 댓글 목록
+서비스 영역과 Controller 처리
+ReplyController의 설계
+등록 작업과 테스트
+특정 게시물의 댓글 목록 확인
+댓글 삭제/조회
+댓글 수정
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ex
+
+환경설정
+
+1. JDBC 테스트 코드 (ojdbc6 추가 이후)
+
+@Log4j
+public class JDBCTests {
+	static {
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testConnection() {
+		try(Connection con = DriverManager.getConnection(
+				"jdbc:oracle:thin:@localhost:1521:xe",
+				"book_ex",
+				"book_ex")) {
+			log.info(con);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+}
+
+
+
+
+2. 커넥션 풀 설정
+
+root-context.xml
+
+<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+	<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
+	<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:xe"></property>
+	<property name="username" value="book_ex"></property>
+	<property name="password" value="book_ex"></property>
+</bean>
+	
+<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+	<constructor-arg ref="hikariConfig"></constructor-arg>
+</bean>
+
+
+
+
+2-1. 커넥션 풀 테스트
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
+@Log4j
+public class DataSourceTests {
+	@Autowired
+	private DataSource dataSource;
+	
+	@Test
+	public void testConnection() {
+		try(Connection con = dataSource.getConnection()) {
+			log.info(con);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+}
+
+
+
+
+3. mybatis와 스프링 연동
+
+root-context.xml
+
+<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+	<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
+	<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:xe"></property>
+	<property name="username" value="book_ex"></property>
+	<property name="password" value="book_ex"></property>
+</bean>
+	
+<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+	<constructor-arg ref="hikariConfig"></constructor-arg>
+</bean>
+	
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="dataSource" ref="dataSource"></property>
+</bean>
+	
+<mybatis-spring:scan base-package="org.zerock.mapper"/>
+<context:component-scan base-package="org.zerock.sample"></context:component-scan>
+
+
+
+
+mapper 인터페이스 
+
+public interface TimeMapper {	
+	//@Select("SELECT sysdate FROM dual")
+	public String getTime();
+}
+
+
+
+
+mapper.xml
+
+<mapper namespace="org.zerock.mapper.TimeMapper">
+	<select id="getTime2" resultType="string">
+		SELECT sysdate FROM dual
+	</select>
+</mapper>
+
+
+
+
+3-1. mapper 테스트
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
+@Log4j
+public class TimeMapperTests {
+	@Autowired
+	private TimeMapper timeMapper;
+	
+	@Test
+	public void testGetTime() {
+		log.info(timeMapper.getClass().getName());
+		log.info(timeMapper.getTime());
+	}
+}
+
+
+
+
+4. log4jdbc-log4j2 설정
+
+root-context.xml
+
+<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+	<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
+	<property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@localhost:1521:xe"></property>
+	<property name="username" value="book_ex"></property>
+	<property name="password" value="book_ex"></property>
+</bean>
+	
+<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+	<constructor-arg ref="hikariConfig"></constructor-arg>
+</bean>
+	
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="dataSource" ref="dataSource"></property>
+</bean>
+	
+<mybatis-spring:scan base-package="org.zerock.mapper"/>
+<context:component-scan base-package="org.zerock.sample"></context:component-scan>
+
+
+
+
+log4jdbc.log4j2.properties
+
+log4jdbc.spylogdelegator.name=net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator
+
+
+
+
+log4j.xml
+
+<logger name="jdbc.audit">
+	<level value="warn" />
+</logger>
+	
+<logger name="jdbc.resultset">
+	<level value="warn" />
+</logger>
+	
+<logger name="jdbc.connection">
+	<level value="warn" />
+</logger>
+
+
+
+
+Controller의 파라미터 수집(바인딩)
+
+1. SampleDTO의 setter 메서드가 동작하면서 파라미터를 수집
+
+@Data
+public class SampleDTO {
+	private String name;
+	private int age;
+}
+
+@GetMapping("/ex01")
+public String ex01(SampleDTO dto) {}  
+
+url : localhost/sample/ex01?name=AAA&age=10
+
+
+
+
+2. 변수명과 파라미터의 이름이 다른 경우에 유용
+
+@GetMapping("/ex02")
+public String ex02(@RequestParam("name") String name, @RequestParam("age") int age) {}  
+
+url : localhost/sample/ex01?name=AAA&age=10
+
+
+
+
+3. 리스트, 동일한 이름의 파라미터가 여러 개 전달되는 경우
+
+@GetMapping("/ex02List")
+public String ex02List(@RequestParam("ids") ArrayList<String> ids) {} 
+
+url : localhost/sample/ex02List?ids=111&ids=222&ids=333
+
+
+
+
+4. 배열, 동일한 이름의 파라미터가 여러 개 전달되는 경우
+
+@GetMapping("/ex02Array")
+public String ex02Array(@RequestParam("ids") String[] ids) {}  
+
+url : localhost/sample/ex02Array?ids=111&ids=222&ids=333
+
+
+
+
+5. 객체 리스트
+
+@Data
+public class SampleDTOList {
+	private List<SampleDTO> list;
+	
+	public SampleDTOList() {
+		list = new ArrayList<>();
+	}
+}
+
+@GetMapping("/ex02Bean")
+public String ex02Bean(SampleDTOList list) {}
+
+url : localhost/sample/ex02Array?list[0].name=aaa&list[1].name=bbb  // 특수문자 처리 : [, '%5B', ], '%5D', javascript : enocdeURIComponent()
+
+
+
+
+6. @InitBinder, 파라미터를 변환해서 처리해야 하는 경우('2018-01-01' -> Date)
+
+@Data
+public class TodoDTO {
+	private String title;
+	private Date dueDate;
+}
+
+@InitBinder                                                                                             // controller, 파라미터를 바인딩할 때 자동으로 호출됨 
+public void initBinder(WebDataBinder binder) {
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	binder.registerCustomEditor(java.util.Date.class, new CustomDateEditor(dateFormat, false));
+}
+
+@GetMapping("/ex03")
+public String ex03(TodoDTO todo) {}
+
+url : http://localhost/sample/ex03?title=test&dueDate=2018-01-01
+
+
+
+
+7. @DateTimeFormat, 파라미터를 변환해서 처리해야 하는 경우('2018-01-01' -> Date), @InitBinder가 필요없음
+
+@Data
+public class TodoDTO {
+	private String title;
+	
+	@DateTimeFormat(pattern = "yyyy/MM/dd")                                                         // 변환이 필요한 클래스 맴버 변수에 추가 
+	private Date dueDate;
+}
+
+@GetMapping("/ex03")
+public String ex03(TodoDTO todo) {}
+
+url : http://localhost/sample/ex03?title=test&dueDate=2018/01/01
+
+
+
+
+Model이라는 데이터 전달자
+
+1. Model, addAttribute메서드로 key, value 담아 화면에 전달
+
+@RequestMapping(value = "/", method = RequestMethod.GET)
+public String home(Model model) {
+	model.addAttribute("serverTime", new java.util.Date());	
+	return "home";
+}
+
+
+
+
+2. @ModelAttribute, 기본형 파라미터를 Model에 담아 전달할 경우 사용                            // java Beans 규칙에 맞는 객체는 앞글자 소문자로 화면에 전달됨
+
+@GetMapping("/ex04")
+public String ex04(SampleDTO dto, @ModelAttribute("page") int page) {}
+
+<h2>SAMPLEDTO  ${sampleDTO }</h2>
+<h2>PAGE  ${page }</h2>
+
+
+
+
+@RedirectAttribute
+
+
+
+
+Controller의 리턴 타입
+String              : jsp를 이용하는 경우에는 jsp 파일의 경로와 파일이름을 나타냄
+void                : 호출하는 URL과 동일한 이름의 jsp를 의미
+VO, DTO 타입        : 주로 JSON 타입의 데이터를 만들어서 반환하는 용도로 사용
+ResponseEntity 타입 : response 할 때 Http 헤더 정보와 내용을 가공하는 용도로 사용
+Model, ModelAndView : Model로 데이터를 변환하거나 화면까지 같이 지정하는 경우에 사용 (최근에는 사용하지 않음)
+HttpHeaders         : 응답에 내용 없이 Http 헤더 메시지만 전달하는 용도로 사용
+
+
+
+
+1. void 타입
+
+@GetMapping("/ex05")
+public void ex05() {}
+
+url  : localhost/sample/ex05
+경로 : /WEB-INF/views/sample/ex05.jsp
+
+
+
+2. String 타입
+
+@RequestMapping(value = "/", method = RequestMethod.GET)
+public String home() {
+	return "home";                                   // 키워드 : redirect, forward
+}
+
+url  : localhost/
+경로 : /WEB-INF/views/home.jsp
+
+
+
+
+3. 객체 타입 VO(Value Objext), DTO(Data Transfer Object), JSON 데이터를 만들어 내는 용도로 사용, jackson-databind 라이브러리 필요
+
+@GetMapping("/ex06")
+public @ResponseBody SampleDTO ex06() {
+		
+	SampleDTO dto = new SampleDTO();
+	dto.setAge(10);
+	dto.setName("홍길동");
+
+	return dto;
+}
+
+url  : localhost/ex06
+결과 : {"name":"홍길동","age":10}
+
+
+
+
+4. ResponseEntity 타입, HTTP 프로토콜의 원하는 헤더 정보나 데이터를 전달, 개발자 도구 - Network에서 확인 가능
+
+@GetMapping("/ex07")
+public ResponseEntity<String> ex07() {
+	String msg = "{\"name\": \"홍길동\"}";
+
+	HttpHeaders header = new HttpHeaders();
+	header.add("Content-Type", "application/json;charset=UTF-8");
+
+	return new ResponseEntity<>(msg, header, HttpStatus.OK);
+}
+
+url  : localhost/ex07
+결과 : {"name":"홍길동","age":10}
+
+
+
+
+파일 업로드 처리
+commons-fileupload 라이브러리 필요, Servlet 3.0 (Tomcat 7.0) 이후에는 기본적으로 업로드되는 파일을 처리 기능이 추가됨(라이브러리 필요 없음)
+
+servlet-context.xml
+<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<beans:property name="defaultEncoding" value="utf-8"></beans:property>                                 // 업로드 파일 이름 한글 깨짐 처리
+	<beans:property name="maxUploadSize" value="1048575600"></beans:property>                              // 한 번의 request로 전달될 수 있는 최대 크기
+	<beans:property name="maxUploadSizePerFile" value="2097152"></beans:property>                          // 하나의 파일 최대 크기
+	<beans:property name="uploadTempDir" value="file:/c:/Users/PDS/Downloads"></beans:property>            // 임시 파일 경로
+	<beans:property name="maxInMemorySize" value="10485756"></beans:property>                              // 메모리 상에서 유지하는 최대 크기
+</beans:bean>
+
+@GetMapping("/exUpload")
+public void exUpload() {}
+
+@PostMapping("/exUploadPost")
+public void exUploadPost(ArrayList<MultipartFile> files) {
+	files.forEach(file -> {
+		log.info("-------------------------------------");
+		log.info("name:" + file.getOriginalFilename());
+		log.info("size:" + file.getSize());
+	});
+}
+
+<form action="/sample/exUploadPost" method="post" enctype="multipart/form-data">
+	<div>
+		<input type="file" name="files">
+	</div>
+	<div>
+		<input type="file" name="files">
+	</div>
+	<div>
+		<input type="file" name="files">
+	</div>
+	<div>
+		<input type="submit">
+	</div>
+</form>
+
+
+
+
+404 에러 페이지 처리 
+
+흔한 에러와 관련된 HTTP 상태 코드 404(잘못된 url 호출), 500(Internal Server Error)
+
+@ControllerAdvice : AOP(Aspect-Oriented-Programming)를 이용하는 방식
+@ExceptionHandler : 해당 메서드가 처리하는 예외 타입 지정
+
+web.xml
+<servlet>
+	<servlet-name>appServlet</servlet-name>
+	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	<init-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+	</init-param>
+	<init-param>
+		<param-name>throwExceptionIfNoHandlerFound</param-name>
+		<param-value>true</param-value>
+	</init-param>
+	<load-on-startup>1</load-on-startup>
+</servlet>
+
+package org.zerock.exception;
+@ControllerAdvice
+@Log4j
+public class CommonExceptionAdvice {
+	@ExceptionHandler(NoHandlerFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public String handle404(NoHandlerFoundException ex) {
+		return "custom404";
+	}
+}
+
+servlet-context.xml
+<context:component-scan base-package="org.zerock.exception" />
+
+url : 존재하지 않는 url, /sample/.. 의 경우 SampleController가 무조건 동작
+
+
+
+
+영속 영역의 CRUD 구현
+
+1. create(insert) 처리
+
+- insert만 처리되고 생성된 PK 값을 알 필요가 없는 경우
+
+<insert id="insert">
+	insert into tbl_board (bno,title,content,writer)
+	values(seq_board.nextval, #{title}, #{content}, #{writer})
+</insert>
+
+
+
+
+- insert문이 실행되고 생성된 PK 값을 알아야 하는 경우
+
+<insert id="insertSelectKey">
+	<selectKey keyProperty="bno" order="BEFORE" resultType="long">  // @SelectKey, MyBatis 어노테이션, 주로 PK 값을 미리(before) SQL로 처리해 두고 set
+		select seq_board.nextval from dual
+	</selectKey>
+	insert into tbl_board (bno,title,content,writer)
+	values (#{bno}, #{title}, #{content}, #{writer})
+</insert>
+
+
+
+
+2. read(select) 처리
+
+<select id="read" resultType="org.zerock.domain.BoardVO">
+	select * from tbl_board where bno = #{bno}
+</select>
+
+
+
+
+3. delete 처리
+
+<delete id="delete">
+	delete from tbl_board where bno = #{bno}
+</delete>
+
+
+
+4. update 처리
+
+<update id="update">
+	update tbl_board
+	set title = #{title},
+	content = #{content},
+	writer = #{writer},
+	updateDate = sysdate
+	where bno = #{bno}
+</update>
+
+
+
+
+비즈니스 계층
+
+1. service 인터페이스 작성
+
+public interface BoardService {
+	public void register(BoardVO board);
+	
+	public BoardVO get(Long bno);
+	
+	public boolean modify(BoardVO board);
+	
+	public boolean remove(Long bno);
+	
+	public List<BoardVO> getList();
+}
+
+
+
+
+2. serviceImpl 클래스 구현, 영속 계층 Bean 주입 (@Service, @Setter, @Autowired) / XML 처리
+
+@Log4j
+@Service
+@AllArgsConstructor
+public class BoardServiceImpl implements BoardService{
+
+	@Setter(onMethod_ = @Autowired)
+	private BoardMapper mapper;
+	
+	@Override
+	public void register(BoardVO board) {
+		log.info("register....." + board);
+		mapper.insertSelectKey(board);
+	}
+
+	@Override
+	public BoardVO get(Long bno) {
+		log.info("get......" + bno);
+		return mapper.read(bno);
+	}
+
+	@Override
+	public boolean modify(BoardVO board) {
+		log.info("modify......" + board);
+		return mapper.update(board) == 1;
+	}
+
+	@Override
+	public boolean remove(Long bno) {
+		log.info("remove....." + bno);
+		return mapper.delete(bno) == 1;
+	}
+
+	
+	@Override 
+	public List<BoardVO> getList() { 
+		log.info("getList......"); 
+		return mapper.getList(); 
+	}
+}	 
+
+
+
+
+3. 작성한 비즈니스 계층의 테스트
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
+@Log4j
+public class BoardServiceTests {
+	@Setter(onMethod_ = { @Autowired })
+	private BoardService service;
+
+	@Test
+	public void testExist() {
+		log.info(service);
+		assertNotNull(service);
+	}
+
+	@Test
+	public void testRegister() {
+		BoardVO board = new BoardVO();
+		board.setTitle("새로 작성하는 글");
+		board.setContent("새로 작성하는 내용");
+		board.setWriter("newbie");
+
+		service.register(board);
+
+		log.info("생성된 게시물의 번호: " + board.getBno());
+	}
+
+	@Test
+	public void testGetList() {
+		service.getList().forEach(board -> log.info(board));           // List의 forEach 메서드 사용                          
+	}
+
+	@Test
+	public void testGet() {
+		log.info(service.get(1L));
+	}
+
+	@Test
+	public void testDelete() {
+		log.info("REMOVE RESULT: " + service.remove(2L));
+	}
+
+	@Test
+	public void testUpdate() {
+		BoardVO board = service.get(1L);
+
+		if (board == null) {
+			return;
+		}
+
+		board.setTitle("제목 수정합니다.");
+		log.info("MODIFY RESULT: " + service.modify(board));
+	}
+}
+
+
+
+
+프리젠테이션(웹) 계층의 CRUD 구현
+Tomcat(WAS)을 실행하지 않고 Controller를 테스트
+
+1. 원하는 기능을 호출하는 방식을 정리
+
+Task		URL			Method		Parameter	From		URL 이동
+전체 목록	/board/list		GET
+등록 처리	/board/register		POST		모든 항목	입력화면 필요	이동
+조회		/board/read		GET		bno=123
+삭제 처리	/board/remove		POST		bno		입력화면 필요	이동
+수정 처리	/board/modify		POST		모든 항목	입력화면 필요	이동
+
+
+
+
+2.Controller작성
+
+@Controller
+@Log4j
+@RequestMapping("/board/*")
+@AllArgsConstructor
+public class BoardController {
+	private BoardService service;
+	
+	@GetMapping("/list")
+	public void list(Model model) {
+		model.addAttribude("list", service.getList());
+	}
+
+	@PostMapping("/register")
+	public String register(BoardVO board, RedirectAttributes rttr) {               // RedirectAttributes, redirect 시 필요한 데이터 전달 
+		log.info("register: " + board);
+		
+		service.register(board);
+		
+		rttr.addFlashAttribute("result", board.getBno());
+		
+		return "redirect:/board/list";                                         // 'redirect:', response.sendRedirect() 처리, url 이동
+	}
+}
+
+
+
+
+3. Controller 테스트
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration                                                                     // 스프링의 WebApplicationContext를 이용하기 위해 사용
+@ContextConfiguration({ "file:src/main/webapp/WEB-INF/spring/root-context.xml",
+		"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml" })
+@Log4j
+public class BoardControllerTests {
+	@Setter(onMethod_ = { @Autowired })
+	private WebApplicationContext ctx;
+
+	private MockMvc mockMvc;                                                         // 가짜 mvc, url과 파라미터 등을 브라우저에서 사용한 것처럼 만듬
+
+	@Before                                                                          // JUnit, 모든 테스트 전에 매번 실행되는 메서드가 됨
+	public void setup() {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
+	}
+
+	@Test
+	public void testList() throws Exception {
+		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/board/list"))
+					.andReturn().getModelAndView().getModelMap());   // getModelMap(), Model 객체를 반환
+	}
+
+	@Test
+	public void testRegister() throws Exception {
+		String resultPage = mockMvc.perform(MockMvcRequestBuilders.post("/board/register")
+						.param("title", "테스트 새글 제목")
+						.param("content", "테스트 새글 내용").param("writer", "user00"))
+					    .andReturn().getModelAndView().getViewName();                         // getViewName(), viewName String으로 반환
+		log.info(resultPage);
+	}
+}
+
+
+
+
+화면처리
+
+1. jstl
+
+- c:forEach
+
+<c:forEach items="${list }" var="board">
+	<tr>
+		<td><c:out value="${board.bno }"></c:out></td>
+	</tr>
+</c:forEach>
+
+
+
+- c:out
+
+<script>
+var result = '<c:out value="${result}"/>';  // script 에서도 c:out을 통해 el로 데이터를 받을 수 있음
+</script>
+
+
+
+- fmt:formatDate
+
+<fmt:formatDate pattern="yyyy-MM-dd" value="${board.regdate }" />
+
+
+
+
+1-1. jstl 외 jQuery, bootstrap, javascript
+
+jQuery
+
+- 화면 로딩 시 실행되는 함수
+
+$(document).ready(function(){ });
+
+
+- on api
+
+
+- data
+<button data-oper="list">List</button>
+$(this).data("oper");       // dataset으로 데이터 얻음
+
+
+
+
+
+
+bootstrap
+
+- modal
+
+$("#myModal").modal("show");  // 모달 창 보이게 함, "show", "hide", "toggle"
+
+
+
+
+javascript
+
+- location
+
+self.loaction = "/board/register";  // 현재 창 페이지 이동 (.href 생략 가능)
+
+
+
+
+2. 한글 문제와 UTF-8 필터 처리
+
+web.xml
+
+<filter>
+	<filter-name>encoding</filter-name>
+	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+	<init-param>
+		<param-name>encoding</param-name>
+		<param-value>UTF-8</param-value>
+	</init-param>
+</filter>
+
+<filter-mapping>
+	<filter-name>encoding</filter-name>
+	<servlet-name>appServlet</servlet-name>
+</filter-mapping>
+
+
+
+
+3. 뒤로 가기 문제 처리 
+
+history.replaceState(), history.state를 사용해서 history 객체의 상태 체크
+
+$(document).ready(function() {
+	var result = '<c:out value="${result}"/>';
+
+	checkModal(result);                                                                   // history.replaceState() 보다 먼저 실행됨
+
+	history.replaceState({}, null, null);                                                 // history 상태 설정 (data, title, url), data 기본 값 : null
+
+	function checkModal(result) {
+		if (result === '' || history.state) {                                         // history 상태 체크, null이 아니면
+			return;
+		}
+
+		if (parseInt(result) > 0) {
+			$(".modal-body").html("게시글 " + parseInt(result) 
+                                              + " 번이 등록되었습니다.");
+		}
+
+		$("#myModal").modal("show");
+	}
+
+	$("#regBtn").on("click", function() {
+		self.location = "/board/register";
+	});
+}
+
+
+
+
+4. form 처리
+
+<button data-oper="modify" class="btn btn-default">Modify</button>
+<button data-oper="list" class="btn btn-default">List</button>
+                       		
+<form id="operForm" action="/board/modify" method="get">
+<input type="hidden" id="bno" name="bno" value='<c:out value="${board.bno }"/>'>
+</form>
+
+
+$(document).ready(function(){
+	var operForm = $("#operForm");
+			
+	$("button[data-oper='modify']").on("click", function(e){                  // 선택자로 attr을 이용할 수 있음
+		operForm.attr("action", "/board/modify").submit();                // 하나의 폼의 action을 바꿔 modify, list 버튼 둘 다 사용
+	});
+			
+	$("button[data-oper='list']").on("click", function(e){
+		operForm.find("#bno").remove();                                   // 자식 찾기
+		operForm.attr("action", "/board/list");
+		operForm.submit();
+	})
+})
+
+
+
+
+오라클 데이터베이스 페이징 처리
+
+1. 실행 계획(execution plan)과 order by
+
+select * from tbl_board;                      // FULL                                 : 테이블 내의 모든 데이터를 스캔   
+select * from tbl_board order by bno+1 desc;  // ORDER BY, FULL                       : 내림차순 정렬 sort, 테이블 내의 모든 데이터를 스캔                  
+select * from tbl_board order by bno desc;    // BY INDEX ROWID, FULL SCAN DESCENDING : 해당 인덱스를 이용해 데이터 조회, sort 과정이 없음
+
+
+
+
+2. order by 보다는 인덱스를 사용
+
+select /*+ index_desc(tbl_board pk_board)*/ * 
+from tbl_board where bno > 0;                 // BY INDEX ROWID, RANGE SCAN DESENDING 
+
+
+
+
+3. 오라클 힌트(hint)
+
+FULL 힌트
+select /*+ FULL(tbl_board) */ * 
+from tbl_board order by bno desc;             // 원래는 bno가 PK 이므로 index가 사용되어야 하지만 힌트로 인해 테이블을 FULL로 접근하고 sort가 적용됨
+
+INDEX_ASC, INDEX_DESC 힌트
+select /*+ INDEX_ASC(tbl_board pk_board) */ * 
+from tbl_board order by bno desc; 
+
+
+
+
+4. 인라인뷰(in-line View)
+
+select rn, bno, title, content
+from 
+(select /*+ index_desc(tbl_board pk_board)*/ rownum rn, bno, title, content
+from tbl_board where rownum <= 20)
+where rn > 10;                                // rownum이 붙은 select 결과를 인라인 뷰에서 추출해 사용함으로 rownum 조건제약에서 벗어남, 페이징 처리에 사용
+
+
+
+
+MyBatis와 스프링에서 페이징 처리
+
+1. 페이징 처리를 위한 클래스 생성 (필요한 파라미터 페이징 번호(pageNum), 한 페이지당 데이터(amount))
+
+@Getter
+@Setter
+@ToString
+public class Criteria {
+	private int pageNum;
+	private int amount;
+	
+	private String type;
+	private String keyword;
+	
+	public Criteria() {
+		this(1,10);
+	}
+	
+	public Criteria(int pageNum, int amount) {
+		this.pageNum = pageNum;
+		this.amount = amount;
+	}
+}
+
+
+
+
+2. MyBatis 처리와 테스트
+
+java
+public List<BoardVO> getListWithPaging(Criteria cri);
+
+
+xml
+<select id="getListWithPaging"
+	resultType="org.zerock.domain.BoardVO">
+	<![CDATA[
+		select bno, title, content, writer, regdate, updatedate, replycnt
+		from 
+			(
+			select /*+ index_desc(tbl_board pk_board) */ 
+				rownum rn, bno, title, content, writer, regdate, updatedate, replycnt
+			from
+				tbl_board
+			where 
+			rownum <= #{pageNum} * #{amount}                                              // 20, 마지막 rownum
+			)
+		where rn > (#{pageNum} - 1) * #{amount}                                               // 10, 시작 rownum
+	]]>
+</select>
+
+
+test
+@Test
+public void testPaging() {
+	Criteria cri = new Criteria();
+	cri.setPageNum(2);
+	cri.setAmount(10);
+	List<BoardVO> list = mapper.getListWithPaging(cri);
+	list.forEach(board -> log.info(board));
+}
+
+
+
+
+3. service 수정과 테스트
+
+service.java
+public List<BoardVO> getList(Criteria cri);
+
+
+serviceImpl.java
+@Override
+public List<BoardVO> getList(Criteria cri) {
+	return mapper.getListWithPaging(cri);
+}
+
+
+test.java
+@Test
+public void testGetList() {
+	service.getList(new Criteria(2, 10)).forEach(board -> log.info(board));
+}
+
+
+
+
+4. controller 수정과 테스트
+
+controller.java
+@GetMapping("/list")
+public void list(Criteria cri, Model model) {
+	model.addAttribute("list", service.getList(cri));
+}
+
+
+test.java
+@Test
+public void testListPaging() throws Exception {
+	log.info(mockMvc.perform(MockMvcRequestBuilders.get("/board/list").param("pageNum", "2").param("amount", "50"))
+			.andReturn().getModelAndView().getModelMap());
+}
+
+
+
+
+페이징 화면 처리
+
+1. 페이징 처리를 위한 클래스 설계
+
+@Getter
+@ToString
+public class PageDTO {
+	private int startPage;
+	private int endPage;
+	private boolean prev, next;
+	
+	private int total;
+	private Criteria cri;
+	
+	public PageDTO(Criteria cri, int total) {
+		this.cri = cri;
+		this.total = total;
+		
+		this.endPage = (int)(Math.ceil(cri.getPageNum() / 10.0)) * 10;
+		this.startPage = this.endPage - 9;
+		
+		int realEnd = (int)(Math.ceil((total * 1.0) / cri.getAmount()));
+		
+		if(realEnd < this.endPage) {
+			this.endPage = realEnd;
+		}
+		
+		this.prev = this.startPage > 1;
+		this.next = this.endPage < realEnd;
+	}
+}
+
+
+controller.java
+@GetMapping("/list")
+public void list(Criteria cri, Model model) {
+	log.info("list " + cri);
+	model.addAttribute("list", service.getList(cri));
+	model.addAttribute("pageMaker", new PageDTO(cri, 123));  // 전체 데이터 수, 임시 123
+}
+
+
+
+
+2. JSP에서 페이지 번호 출력
+
+list.jsp
+<div class="pull-right">
+	<ul class="pagination">
+		<c:if test="${pageMaker.prev }">
+			<li class="paginate_button previous"><a href="${pageMaker.startPage - 1}">Previous</a></li>
+		</c:if>
+
+		<c:forEach var="num" begin="${pageMaker.startPage }" end="${pageMaker.endPage }">
+			<li class="paginate_button ${pageMaker.cri.pageNum ==num ? "active":"" }"><a href="${num }">${num }</a>
+			</li>
+		</c:forEach>
+
+		<c:if test="${pageMaker.next }">
+			<li class="paginate_button next"><a href="${pageMaker.endPage + 1}">Next</a></li>
+		</c:if>
+	</ul>
+</div>
+
+
+
+
+3. 페이지 번호 이벤트 처리
+
+list.jsp
+<form id="actionForm" action="/board/list" method="get">
+	<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
+	<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
+</form>
+
+
+script
+var actionForm = $("#actionForm");
+$(document).ready(function() {							
+	$(".paginate_button a").on("click", function(e) {
+		e.preventDefault();
+								
+		console.log("click");
+								
+		actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+		actionForm.submit();
+	});
+});
+
+
+
+
+4. 조회 페이지로 이동
+조회 페이지에서 목록으로 이동 시 무조건 1페이지로 이동됨, 조회페이지에 pageNum과 amount를 같이 전달
+
+list.jsp
+<td>
+	<a class="move" href='<c:out value="${board.bno }"/>'>
+		<c:out value="${board.title }"></c:out>
+	</a>
+</td>
+
+
+script
+$(".move").on("click", function(e){
+	e.preventDefault();
+	actionForm.append("<input type='hidden' name='bno' value='"+$(this).attr("href")+"'>");
+	actionForm.attr("action", "/board/get");
+	actionForm.submit();
+});
+
+
+
+
+5. 조회 페이지에서 다시 목록 페이지로 이동, 수정 페이지로 이동도 적용 - 페이지 번호 유지
+
+controller.java
+@GetMapping({"/get", "/modify"})
+public void get(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, Model model) {  // @ModelAttribute로 Criteria model에 추가
+	log.info("/get or modify");
+	model.addAttribute("board", service.get(bno));
+}
+
+
+get.jsp
+<form id="operForm" action="/board/modify" method="get">
+      <input type="hidden" id="bno" name="bno" value='<c:out value="${board.bno }"/>'>
+      <input type="hidden" id="pageNum" name="pageNum" value='<c:out value="${cri.pageNum }"/>'>
+      <input type="hidden" id="amount" name="amount" value='<c:out value="${cri.amount }"/>'>                 			
+</form>
+
+
+
+
+6. 수정과 삭제 처리
+
+modify.jsp
+<form role="form" action="/board/modify" method="post">
+	<input type="hidden" id="pageNum" name="pageNum" value='<c:out value="${cri.pageNum }"/>'>
+        <input type="hidden" id="amount" name="amount" value='<c:out value="${cri.amount }"/>'>
+
+
+controller.java
+@PostMapping("/modify")
+public String modify(BoardVO board, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+		
+	if(service.modify(board)) {
+		rttr.addFlashAttribute("result", "success");
+	}
+		
+	rttr.addAttribute("pageNum", cri.getPageNum());
+	rttr.addAttribute("amount", cri.getAmount());
+		
+	return "redirect:/board/list";
+}
+
+
+
+
+7. 수정/삭제 페이지에서 목록 페이지로 이동
+
+modify.jsp
+$(document).ready(function(){
+	var formObj = $("form");
+			
+	$("button").on("click", function(e){
+		e.preventDefault();
+				
+		var operation = $(this).data("oper");
+				
+		console.log(operation);
+				
+		if(operation === "remove") {
+			formObj.attr("action", "/board/remove");
+		} else if(operation === "list"){
+			formObj.attr("action", "/board/list").attr("method", "get");
+			var pageNumTag = $("input[name='pageNum']").clone();
+			var amountTag = $("input[name='amount']").clone();
+						
+			formObj.empty();
+			formObj.append(pageNumTag);
+			formObj.append(amountTag);
+		}
+		formObj.submit();
+	});
+});
+
+
+
+
+8. MyBatis에서 전체 데이터의 개수 처리
+
+mapper.java
+public int getTotalCount(Criteria cri);
+
+
+xml
+<select id="getTotalCount" resultType="int">
+	select count(*) from
+	tbl_board where bno > 0
+</select>
+
+
+service.java
+public int getTotal(Criteria cri);
+
+
+serviceImpl.java
+@Override
+public int getTotal(Criteria cri) {	
+	return mapper.getTotalCount(cri);
+}
+
+
+controller.java
+@GetMapping("/list")
+public void list(Criteria cri, Model model) {
+	log.info("list " + cri);
+	model.addAttribute("list", service.getList(cri));
+//		model.addAttribute("pageMaker", new PageDTO(cri, 123));
+		
+	int total = service.getTotal(cri);
+	log.info("total: " + total);
+		
+	model.addAttribute("pageMaker", new PageDTO(cri, total));
+}
+
+
+
+
+검색 처리
+
+1. 검색 조건 처리를 위한 Criteria의 변화
+
+Criteria.java
+
+@Getter
+@Setter
+@ToString
+public class Criteria {
+	private int pageNum;
+	private int amount;
+	
+	private String type;
+	private String keyword;
+	
+	public Criteria() {
+		this(1,10);
+	}
+	
+	public Criteria(int pageNum, int amount) {
+		this.pageNum = pageNum;
+		this.amount = amount;
+	}
+	
+	public String[] getTypeArr() {
+		return type == null? new String[] {}: type.split("");
+	}
+}
+
+
+
+
+2. mapper.xml에서 Criteria 처리
+
+mapper.xml
+
+<sql id="criteria">
+	<trim prefix="(" suffix=") and" prefixOverrides="or">
+		<foreach item="type" collection="typeArr">
+			<trim prefix="or">
+				<choose>
+					<when test="type == 'T'.toString()">
+						title like '%'||#{keyword}||'%'
+					</when>
+					<when test="type == 'C'.toString()">
+						content like '%'||#{keyword}||'%'
+					</when>
+					<when test="type == 'W'.toString()">
+						writer like '%'||#{keyword}||'%'
+					</when>
+				</choose>
+			</trim>
+		</foreach>
+	</trim>
+</sql>
+
+<select id="getListWithPaging" resultType="org.zerock.domain.BoardVO">
+	<![CDATA[
+		select bno, title, content, writer, regdate, updatedate, replycnt
+		from 
+			(
+			select /*+ index_desc(tbl_board pk_board) */ 
+				rownum rn, bno, title, content, writer, regdate, updatedate, replycnt
+			from
+				tbl_board
+			where 
+	]]>
+	<include refid="criteria"></include>
+	
+	<![CDATA[
+			rownum <= #{pageNum} * #{amount}
+			)
+		where rn > (#{pageNum} - 1) * #{amount}
+	]]>
+</select>
+
+
+
+
+3. BoardMapperTests
+
+controller.java
+
+@Test
+public void testSearch() {
+	Criteria cri = new Criteria();
+	cri.setKeyword("새로");
+	cri.setType("TCW");
+
+	List<BoardVO> list = mapper.getListWithPaging(cri);
+
+	list.forEach(board -> log.info(board));
+}
+
+
+
+4.목록 화면에서의 검색 처리
+
+list.jsp
+
+<form id="searchForm" action="/board/list" method="get">
+	<select name="type">
+		<option value="" <c:out value="${pageMaker.cri.type == null?'selected':'' }"/>>--</option>
+		<option value="T" <c:out value="${pageMaker.cri.type eq 'T'?'selected':'' }"/>>제목
+		<option value="C" <c:out value="${pageMaker.cri.type eq 'C'?'selected':'' }"/>>내용</option>
+		<option value="W" <c:out value="${pageMaker.cri.type eq 'W'?'selected':'' }"/>>작성자</option>
+		<option value="TC" <c:out value="${pageMaker.cri.type eq 'TC'?'selected':'' }"/>>제목 or 내용</option>
+		<option value="TW" <c:out value="${pageMaker.cri.type eq 'TW'?'selected':'' }"/>>제목 or 작성자</option>
+		<option value="TWC"n<c:out value="${pageMaker.cri.type eq 'TWC'?'selected':'' }"/>>제목 or 작성자 or 내용</option>					</select>
+	<input type="text" name="keyword" value='<c:out value="${pageMaker.cri.keyword }"/>'>
+	<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
+	<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
+	<button class="btn btn-deafult">Search</button>
+</form>
+
+
+
+
+5. 검색 버튼의 이벤트 처리
+
+list.jsp
+
+var searchForm = $("#searchForm");
+							
+$("#serchForm button").on("click", function(e){
+								
+	if(!searchForm.find("option:selected").val()){
+		alert("검색종류를 선택하세요");
+		return false;
+	}
+	if(!searchForm.find("input[name='keyword']").val()){
+		alert("키워드를 입력하세요");
+		return false;
+	}
+							
+	searchForm.find("input[name='pageNum']").val("1");
+	e.preventDefault();
+								
+	searchForm.submit();
+});
+
+
+
+
+6. 다른 페이지에 검색 조건과 키워드 전달
+
+list.jsp
+
+<form id="actionForm" action="/board/list" method="get">
+	<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">
+	<input type="hidden" name="amount" value="${pageMaker.cri.amount }">
+	<input type="hidden" name="keyword" value="${pageMaker.cri.keyword }">
+	<input type="hidden" name="type" value="${pageMaker.cri.type }">
+</form>
+
+
+
+
+7. 조회 페이지에서 검색 처리
+
+get.jsp
+
+<form id="operForm" action="/board/modify" method="get">
+        <input type="hidden" id="bno" name="bno" value='<c:out value="${board.bno }"/>'>
+        <input type="hidden" id="pageNum" name="pageNum" value='<c:out value="${cri.pageNum }"/>'>
+        <input type="hidden" id="amount" name="amount" value='<c:out value="${cri.amount }"/>'>
+        <input type="hidden" id="keyword" name="keyword" value='<c:out value="${cri.keyword }"/>'>
+        <input type="hidden" id="type" name="type" value='<c:out value="${cri.type }"/>'>
+</form>
+
+
+
+
+8. 수정/삭제 페이지에서 검색 처리
+
+modify.jsp
+
+<form role="form" action="/board/modify" method="post">
+	<input type="hidden" id="pageNum" name="pageNum" value='<c:out value="${cri.pageNum }"/>'>
+        <input type="hidden" id="amount" name="amount" value='<c:out value="${cri.amount }"/>'>
+        <input type="hidden" id="keyword" name="keyword" value='<c:out value="${cri.keyword }"/>'>
+        <input type="hidden" id="type" name="type" value='<c:out value="${cri.type }"/>'>
+
+
+
+
+9. 수정/삭제 처리는 BoardController에서 redirect 방식으로 동작하므로 type과 keyword 조건을 같이 리다이렉트 시 포함시켜줌
+
+controller.java
+
+@PostMapping("/modify")
+public String modify(BoardVO board, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+		
+	if(service.modify(board)) {
+		rttr.addFlashAttribute("result", "success");
+	}
+		
+	rttr.addAttribute("pageNum", cri.getPageNum());
+	rttr.addAttribute("amount", cri.getAmount());
+	rttr.addAttribute("type", cri.getType());
+	rttr.addAttribute("keyword", cri.getKeyword());
+		
+	return "redirect:/board/list";
+}
+	
+@PostMapping("/remove")
+public String remove(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+
+	if(service.remove(bno)) {
+		rttr.addFlashAttribute("result", "success");
+	}
+		
+	rttr.addAttribute("pageNum", cri.getPageNum());
+	rttr.addAttribute("amount", cri.getAmount());
+	rttr.addAttribute("type", cri.getType());
+	rttr.addAttribute("keyword", cri.getKeyword());		
+		
+	return "redirect:/board/list";
+}
+
+
+
+
+10. 필요한 파라미터만 전달하기 위해 form 태그 내용 수정
+
+modify.jsp
+
+$(document).ready(function(){
+	var formObj = $("form");
+			
+	$("button").on("click", function(e){
+		e.preventDefault();
+				
+		var operation = $(this).data("oper");
+				
+		console.log(operation);
+				
+		if(operation === "remove") {
+			formObj.attr("action", "/board/remove");
+		} else if(operation === "list"){
+			//self.location = "/board/list";
+			//return;
+			formObj.attr("action", "/board/list").attr("method", "get");
+			var pageNumTag = $("input[name='pageNum']").clone();
+			var amountTag = $("input[name='amount']").clone();
+			var keywordTag = $("input[name='keyword']").clone();
+			var typeTag = $("input[name='type']").clone();
+					
+			formObj.empty();
+			formObj.append(pageNumTag);
+			formObj.append(amountTag);
+			formObj.append(keywordTag);
+			formObj.append(typeTag);
+		}
+			formObj.submit();
+	});
+});
+
+
+
+
+11. UriComponentsBuilder를 이용하는 링크 생성
+웹페이지에서 매번 파라미터를 유지하는 일이 번거로울 때 사용
+
+Criteria.java
+
+public String getListLink() {
+	UriComponentsBuilder builder = UriComponentsBuilder.fromPath("")
+		.queryParam("pageNum", this.pageNum)
+		.queryParam("amount", this.getAmount())
+		.queryParam("type", this.getType())
+		.queryParam("keyword", this.getKeyword());
+	
+	return builder.toUriString();
+}
+
+
+Criteria cri = new Criteria();
+cri.setPageNum(3);
+cri.setAmount(20);
+cri.setKeyword("새로");
+cri.setType("TC");
+
+getListLink()의 결과 '?pageNum=3&amount=20&type=TC&keyword=%EC%83%88%EB%A1%9C' 
+
+
+controller.java
+
+@PostMapping("/modify")
+public String modify(BoardVO board, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+		
+	if(service.modify(board)) {
+		rttr.addFlashAttribute("result", "success");
+	}
+		
+	return "redirect:/board/list" + cri.getListLink();
+}
+	
+@PostMapping("/remove")
+public String remove(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criteria cri, RedirectAttributes rttr) {
+
+	if(service.remove(bno)) {
+		rttr.addFlashAttribute("result", "success");
+	}	
+		
+	return "redirect:/board/list" + cri.getListLink();
+}
+
+
+
+
+12. RedirectAttributes addAttribute, addFlashAttribute 차이
+
+addAttribute
+전달한 값은 url뒤에 붙음, 리프레시해도 데이터가 유지됨
+
+addFlashAttribute
+전달한 값은 url뒤에 붙지 않음, 일회성이라 리프레시할 경우 데이터가 소멸함, 2개이상 쓸 경우 데이터 소멸하므로 맵을 이용해서 한번에 값을 전달해야함
+
+
+
+
+REST 방식으로 전환
+
+- @RestController의 반환 타입
+
+1. 단순 문자열 반환
+
+@RestController
+@RequestMapping("/sample")
+@Log4j
+public class SampleController {
+	@GetMapping(value = "/getText", produces = "text/plain; charset=UTF-8")
+	public String getText() {
+		log.info("MIME TYPE: " + MediaType.TEXT_PLAIN_VALUE);
+		
+		return "안녕하세요";
+	}
+}
+
+
+
+
+2. 객체의 반환
+
+@RestController
+@RequestMapping("/sample")
+@Log4j
+public class SampleController {
+	@GetMapping(value = "/getSample", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+	public SampleVO getSample() {
+		return new SampleVO(112, "스타", "로드");
+	}
+}
+
+
+
+3. 컬렉션 타입의 객체 반환
+
+@RestController
+@RequestMapping("/sample")
+@Log4j
+public class SampleController {
+	@GetMapping(value = "/getList")
+	public List<SampleVO> getList() {
+		return IntStream.range(1, 10).mapToObj(i -> new SampleVO(i, i + "First", " Last"))
+				.collect(Collectors.toList());
+	}
+}
+
+
+
+
+4. ResponseEntity 타입
+
+@RestController
+@RequestMapping("/sample")
+@Log4j
+public class SampleController {
+	@GetMapping(value = "/check", params = {"height", "weight"})
+	public ResponseEntity<SampleVO> check(Double height, Double weight) {
+		
+		SampleVO vo = new SampleVO(0, "" + height, "" + weight);
+		
+		ResponseEntity<SampleVO> result = null;
+		
+		if(height < 150) {
+			result = ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(vo);  // 502
+		} else {
+			result = ResponseEntity.status(HttpStatus.OK).body(vo);           // 200
+		}
+		
+		return result;
+	}
+}
+
+url : http://localhost/sample/check.json?height=140&weight=60
+
+
+
+
+- @RestController에서 파라미터
+
+1. @PathVariable
+
+@RestController
+@RequestMapping("/sample")
+@Log4j
+public class SampleController {
+	@GetMapping("/product/{cat}/{pid}")
+	public String[] getPath(@PathVariable("cat") String cat, @PathVariable("pid") Integer pid) {
+		return new String[] { "category: " + cat, "productid: " + pid};
+	}
+}
+
+url : http://localhost/sample/product/bags/1234.json
+
+
+
+
+2. @RequestBody
+
+@RestController
+@RequestMapping("/sample")
+@Log4j
+public class SampleController {
+	@PostMapping("/ticket")
+	public Ticket convert(@RequestBody Ticket ticket) {
+		log.info("convert.......ticket" + ticket);
+		
+		return ticket;
+	}
+}
+
+
+
+
+- @REST 방식의 테스트
+
+1. JUnit 기반의 테스트
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration({"file:src/main/webapp/WEB-INF/spring/root-context.xml",
+	"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml"})
+@Log4j
+public class SampleControllerTests {
+
+	@Setter(onMethod_ = {@Autowired})
+	private WebApplicationContext ctx;
+	
+	private MockMvc mockMvc;
+	
+	@Before
+	public void setup() {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
+	}
+	
+	@Test
+	public void testConvert() throws Exception {
+		Ticket ticket = new Ticket();
+		ticket.setTno(123);
+		ticket.setOwner("Admin");
+		ticket.setGrade("AAA");
+		
+		String jsonStr = new Gson().toJson(ticket);
+		
+		log.info(jsonStr);
+		
+		mockMvc.perform(MockMvcRequestBuilders.post("/sample/ticket")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonStr))
+				.andExpect(status().is(200));
+	}
+}
+
+
+
+
+2. Chrome 확장 프로그램 'Restlet Client' - rest client
+
+method : POST
+url : http://localhost/sample/ticket
+header : content-type - application/json
+body : {"tno":123, "owner":"user00", "grade":"AAA"}
+
+
+
+
+- 다양한 전송방식
+
+1. 등록(Create) / POST   / /members/new
+2. 조회(Read)   / GET    / /members/{id}
+3. 수정(Update) / PUT    / /members/{id} + body (json 데이터 등)
+4. 삭제(Delete) / DELETE / /members/{id}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
